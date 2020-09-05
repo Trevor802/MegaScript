@@ -3,19 +3,22 @@ grammar Calculator;
 /* Parser Rules */
 
 number:         Digit+('.'Digit*)?;
-bool:           (False|True);
-
-booleanExpr:    bool|
-                '('booleanExpr')'|
-                '!'booleanExpr|
-                booleanExpr '&&' booleanExpr|
-                booleanExpr '||' booleanExpr;
+bool:           ('false'|'true');
 
 numericExpr:     number |
                 '('numericExpr')'|
                 '-'numericExpr |
-                numericExpr ('*' | '/') numericExpr |
+                numericExpr ('*' | '/' | '%') numericExpr |
                 numericExpr ('+' | '-') numericExpr;
+
+booleanExpr:    bool|
+                '('booleanExpr')'|
+                '!'booleanExpr|
+                booleanExpr ('==' | '!=') booleanExpr|
+                booleanExpr '&&' booleanExpr|
+                booleanExpr '||' booleanExpr|
+                numericExpr ('<'|'>'|'<='|'>=') numericExpr|
+                numericExpr ('=='|'!=') numericExpr;
 
 expression:     booleanExpr |
                 numericExpr;
@@ -23,8 +26,6 @@ expression:     booleanExpr |
 /* Lexer Rules */
 
 Digit:              [0-9];
-True:               'true';
-False:              'false';
 Not:                '!';
 And:                '&&';
 Or:                 '||';
@@ -33,6 +34,13 @@ Plus:               '+';
 Minus:              '-';
 Multiply:           '*';
 Divide:             '/';
+Modulo:             '%';
 LeftParenthesis:    '(';
 RightParenthesis:   ')';
+Greater:            '>';
+Less:               '<';
+GreaterEqual:       '>=';
+LessEqual:          '<=';
+Equal:              '==';
+NotEqual:           '!=';
 WhiteSpaces:        [ \t\r\n]+ -> skip;

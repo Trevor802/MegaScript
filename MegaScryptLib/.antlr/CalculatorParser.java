@@ -16,29 +16,33 @@ public class CalculatorParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		Digit=1, True=2, False=3, Not=4, And=5, Or=6, Dot=7, Plus=8, Minus=9, 
-		Multiply=10, Divide=11, LeftParenthesis=12, RightParenthesis=13, WhiteSpaces=14;
+		T__0=1, T__1=2, Digit=3, Not=4, And=5, Or=6, Dot=7, Plus=8, Minus=9, Multiply=10, 
+		Divide=11, Modulo=12, LeftParenthesis=13, RightParenthesis=14, Greater=15, 
+		Less=16, GreaterEqual=17, LessEqual=18, Equal=19, NotEqual=20, WhiteSpaces=21;
 	public static final int
-		RULE_number = 0, RULE_bool = 1, RULE_booleanExpr = 2, RULE_numericExpr = 3, 
+		RULE_number = 0, RULE_bool = 1, RULE_numericExpr = 2, RULE_booleanExpr = 3, 
 		RULE_expression = 4;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"number", "bool", "booleanExpr", "numericExpr", "expression"
+			"number", "bool", "numericExpr", "booleanExpr", "expression"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, "'true'", "'false'", "'!'", "'&&'", "'||'", "'.'", "'+'", 
-			"'-'", "'*'", "'/'", "'('", "')'"
+			null, "'false'", "'true'", null, "'!'", "'&&'", "'||'", "'.'", "'+'", 
+			"'-'", "'*'", "'/'", "'%'", "'('", "')'", "'>'", "'<'", "'>='", "'<='", 
+			"'=='", "'!='"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "Digit", "True", "False", "Not", "And", "Or", "Dot", "Plus", "Minus", 
-			"Multiply", "Divide", "LeftParenthesis", "RightParenthesis", "WhiteSpaces"
+			null, null, null, "Digit", "Not", "And", "Or", "Dot", "Plus", "Minus", 
+			"Multiply", "Divide", "Modulo", "LeftParenthesis", "RightParenthesis", 
+			"Greater", "Less", "GreaterEqual", "LessEqual", "Equal", "NotEqual", 
+			"WhiteSpaces"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -171,8 +175,6 @@ public class CalculatorParser extends Parser {
 	}
 
 	public static class BoolContext extends ParserRuleContext {
-		public TerminalNode False() { return getToken(CalculatorParser.False, 0); }
-		public TerminalNode True() { return getToken(CalculatorParser.True, 0); }
 		public BoolContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -188,7 +190,7 @@ public class CalculatorParser extends Parser {
 			{
 			setState(24);
 			_la = _input.LA(1);
-			if ( !(_la==True || _la==False) ) {
+			if ( !(_la==T__0 || _la==T__1) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -209,38 +211,41 @@ public class CalculatorParser extends Parser {
 		return _localctx;
 	}
 
-	public static class BooleanExprContext extends ParserRuleContext {
-		public BoolContext bool() {
-			return getRuleContext(BoolContext.class,0);
+	public static class NumericExprContext extends ParserRuleContext {
+		public NumberContext number() {
+			return getRuleContext(NumberContext.class,0);
 		}
 		public TerminalNode LeftParenthesis() { return getToken(CalculatorParser.LeftParenthesis, 0); }
-		public List<BooleanExprContext> booleanExpr() {
-			return getRuleContexts(BooleanExprContext.class);
+		public List<NumericExprContext> numericExpr() {
+			return getRuleContexts(NumericExprContext.class);
 		}
-		public BooleanExprContext booleanExpr(int i) {
-			return getRuleContext(BooleanExprContext.class,i);
+		public NumericExprContext numericExpr(int i) {
+			return getRuleContext(NumericExprContext.class,i);
 		}
 		public TerminalNode RightParenthesis() { return getToken(CalculatorParser.RightParenthesis, 0); }
-		public TerminalNode Not() { return getToken(CalculatorParser.Not, 0); }
-		public TerminalNode And() { return getToken(CalculatorParser.And, 0); }
-		public TerminalNode Or() { return getToken(CalculatorParser.Or, 0); }
-		public BooleanExprContext(ParserRuleContext parent, int invokingState) {
+		public TerminalNode Minus() { return getToken(CalculatorParser.Minus, 0); }
+		public TerminalNode Multiply() { return getToken(CalculatorParser.Multiply, 0); }
+		public TerminalNode Divide() { return getToken(CalculatorParser.Divide, 0); }
+		public TerminalNode Modulo() { return getToken(CalculatorParser.Modulo, 0); }
+		public TerminalNode Plus() { return getToken(CalculatorParser.Plus, 0); }
+		public NumericExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_booleanExpr; }
+		@Override public int getRuleIndex() { return RULE_numericExpr; }
 	}
 
-	public final BooleanExprContext booleanExpr() throws RecognitionException {
-		return booleanExpr(0);
+	public final NumericExprContext numericExpr() throws RecognitionException {
+		return numericExpr(0);
 	}
 
-	private BooleanExprContext booleanExpr(int _p) throws RecognitionException {
+	private NumericExprContext numericExpr(int _p) throws RecognitionException {
 		ParserRuleContext _parentctx = _ctx;
 		int _parentState = getState();
-		BooleanExprContext _localctx = new BooleanExprContext(_ctx, _parentState);
-		BooleanExprContext _prevctx = _localctx;
+		NumericExprContext _localctx = new NumericExprContext(_ctx, _parentState);
+		NumericExprContext _prevctx = _localctx;
 		int _startState = 4;
-		enterRecursionRule(_localctx, 4, RULE_booleanExpr, _p);
+		enterRecursionRule(_localctx, 4, RULE_numericExpr, _p);
+		int _la;
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
@@ -248,11 +253,10 @@ public class CalculatorParser extends Parser {
 			setState(34);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case True:
-			case False:
+			case Digit:
 				{
 				setState(27);
-				bool();
+				number();
 				}
 				break;
 			case LeftParenthesis:
@@ -260,17 +264,17 @@ public class CalculatorParser extends Parser {
 				setState(28);
 				match(LeftParenthesis);
 				setState(29);
-				booleanExpr(0);
+				numericExpr(0);
 				setState(30);
 				match(RightParenthesis);
 				}
 				break;
-			case Not:
+			case Minus:
 				{
 				setState(32);
-				match(Not);
+				match(Minus);
 				setState(33);
-				booleanExpr(3);
+				numericExpr(3);
 				}
 				break;
 			default:
@@ -290,26 +294,42 @@ public class CalculatorParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 					case 1:
 						{
-						_localctx = new BooleanExprContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_booleanExpr);
+						_localctx = new NumericExprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_numericExpr);
 						setState(36);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 						setState(37);
-						match(And);
+						_la = _input.LA(1);
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Multiply) | (1L << Divide) | (1L << Modulo))) != 0)) ) {
+						_errHandler.recoverInline(this);
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
+							consume();
+						}
 						setState(38);
-						booleanExpr(3);
+						numericExpr(3);
 						}
 						break;
 					case 2:
 						{
-						_localctx = new BooleanExprContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_booleanExpr);
+						_localctx = new NumericExprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_numericExpr);
 						setState(39);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
 						setState(40);
-						match(Or);
+						_la = _input.LA(1);
+						if ( !(_la==Plus || _la==Minus) ) {
+						_errHandler.recoverInline(this);
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
+							consume();
+						}
 						setState(41);
-						booleanExpr(2);
+						numericExpr(2);
 						}
 						break;
 					}
@@ -332,76 +352,121 @@ public class CalculatorParser extends Parser {
 		return _localctx;
 	}
 
-	public static class NumericExprContext extends ParserRuleContext {
-		public NumberContext number() {
-			return getRuleContext(NumberContext.class,0);
+	public static class BooleanExprContext extends ParserRuleContext {
+		public BoolContext bool() {
+			return getRuleContext(BoolContext.class,0);
 		}
 		public TerminalNode LeftParenthesis() { return getToken(CalculatorParser.LeftParenthesis, 0); }
+		public List<BooleanExprContext> booleanExpr() {
+			return getRuleContexts(BooleanExprContext.class);
+		}
+		public BooleanExprContext booleanExpr(int i) {
+			return getRuleContext(BooleanExprContext.class,i);
+		}
+		public TerminalNode RightParenthesis() { return getToken(CalculatorParser.RightParenthesis, 0); }
+		public TerminalNode Not() { return getToken(CalculatorParser.Not, 0); }
 		public List<NumericExprContext> numericExpr() {
 			return getRuleContexts(NumericExprContext.class);
 		}
 		public NumericExprContext numericExpr(int i) {
 			return getRuleContext(NumericExprContext.class,i);
 		}
-		public TerminalNode RightParenthesis() { return getToken(CalculatorParser.RightParenthesis, 0); }
-		public TerminalNode Minus() { return getToken(CalculatorParser.Minus, 0); }
-		public TerminalNode Multiply() { return getToken(CalculatorParser.Multiply, 0); }
-		public TerminalNode Divide() { return getToken(CalculatorParser.Divide, 0); }
-		public TerminalNode Plus() { return getToken(CalculatorParser.Plus, 0); }
-		public NumericExprContext(ParserRuleContext parent, int invokingState) {
+		public TerminalNode Less() { return getToken(CalculatorParser.Less, 0); }
+		public TerminalNode Greater() { return getToken(CalculatorParser.Greater, 0); }
+		public TerminalNode LessEqual() { return getToken(CalculatorParser.LessEqual, 0); }
+		public TerminalNode GreaterEqual() { return getToken(CalculatorParser.GreaterEqual, 0); }
+		public TerminalNode Equal() { return getToken(CalculatorParser.Equal, 0); }
+		public TerminalNode NotEqual() { return getToken(CalculatorParser.NotEqual, 0); }
+		public TerminalNode And() { return getToken(CalculatorParser.And, 0); }
+		public TerminalNode Or() { return getToken(CalculatorParser.Or, 0); }
+		public BooleanExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_numericExpr; }
+		@Override public int getRuleIndex() { return RULE_booleanExpr; }
 	}
 
-	public final NumericExprContext numericExpr() throws RecognitionException {
-		return numericExpr(0);
+	public final BooleanExprContext booleanExpr() throws RecognitionException {
+		return booleanExpr(0);
 	}
 
-	private NumericExprContext numericExpr(int _p) throws RecognitionException {
+	private BooleanExprContext booleanExpr(int _p) throws RecognitionException {
 		ParserRuleContext _parentctx = _ctx;
 		int _parentState = getState();
-		NumericExprContext _localctx = new NumericExprContext(_ctx, _parentState);
-		NumericExprContext _prevctx = _localctx;
+		BooleanExprContext _localctx = new BooleanExprContext(_ctx, _parentState);
+		BooleanExprContext _prevctx = _localctx;
 		int _startState = 6;
-		enterRecursionRule(_localctx, 6, RULE_numericExpr, _p);
+		enterRecursionRule(_localctx, 6, RULE_booleanExpr, _p);
 		int _la;
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(55);
+			setState(63);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case Digit:
+			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
+			case 1:
 				{
 				setState(48);
-				number();
+				bool();
 				}
 				break;
-			case LeftParenthesis:
+			case 2:
 				{
 				setState(49);
 				match(LeftParenthesis);
 				setState(50);
-				numericExpr(0);
+				booleanExpr(0);
 				setState(51);
 				match(RightParenthesis);
 				}
 				break;
-			case Minus:
+			case 3:
 				{
 				setState(53);
-				match(Minus);
+				match(Not);
 				setState(54);
-				numericExpr(3);
+				booleanExpr(6);
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
+			case 4:
+				{
+				setState(55);
+				numericExpr(0);
+				setState(56);
+				_la = _input.LA(1);
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Greater) | (1L << Less) | (1L << GreaterEqual) | (1L << LessEqual))) != 0)) ) {
+				_errHandler.recoverInline(this);
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
+				setState(57);
+				numericExpr(0);
+				}
+				break;
+			case 5:
+				{
+				setState(59);
+				numericExpr(0);
+				setState(60);
+				_la = _input.LA(1);
+				if ( !(_la==Equal || _la==NotEqual) ) {
+				_errHandler.recoverInline(this);
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
+					consume();
+				}
+				setState(61);
+				numericExpr(0);
+				}
+				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(65);
+			setState(76);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,8,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -409,18 +474,18 @@ public class CalculatorParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(63);
+					setState(74);
 					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
 					case 1:
 						{
-						_localctx = new NumericExprContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_numericExpr);
-						setState(57);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(58);
+						_localctx = new BooleanExprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_booleanExpr);
+						setState(65);
+						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
+						setState(66);
 						_la = _input.LA(1);
-						if ( !(_la==Multiply || _la==Divide) ) {
+						if ( !(_la==Equal || _la==NotEqual) ) {
 						_errHandler.recoverInline(this);
 						}
 						else {
@@ -428,34 +493,38 @@ public class CalculatorParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(59);
-						numericExpr(3);
+						setState(67);
+						booleanExpr(6);
 						}
 						break;
 					case 2:
 						{
-						_localctx = new NumericExprContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_numericExpr);
-						setState(60);
-						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(61);
-						_la = _input.LA(1);
-						if ( !(_la==Plus || _la==Minus) ) {
-						_errHandler.recoverInline(this);
+						_localctx = new BooleanExprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_booleanExpr);
+						setState(68);
+						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
+						setState(69);
+						match(And);
+						setState(70);
+						booleanExpr(5);
 						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						setState(62);
-						numericExpr(2);
+						break;
+					case 3:
+						{
+						_localctx = new BooleanExprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_booleanExpr);
+						setState(71);
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						setState(72);
+						match(Or);
+						setState(73);
+						booleanExpr(4);
 						}
 						break;
 					}
 					} 
 				}
-				setState(67);
+				setState(78);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,8,_ctx);
 			}
@@ -489,20 +558,20 @@ public class CalculatorParser extends Parser {
 		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
 		enterRule(_localctx, 8, RULE_expression);
 		try {
-			setState(70);
+			setState(81);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(68);
+				setState(79);
 				booleanExpr(0);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(69);
+				setState(80);
 				numericExpr(0);
 				}
 				break;
@@ -522,13 +591,13 @@ public class CalculatorParser extends Parser {
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
 		case 2:
-			return booleanExpr_sempred((BooleanExprContext)_localctx, predIndex);
-		case 3:
 			return numericExpr_sempred((NumericExprContext)_localctx, predIndex);
+		case 3:
+			return booleanExpr_sempred((BooleanExprContext)_localctx, predIndex);
 		}
 		return true;
 	}
-	private boolean booleanExpr_sempred(BooleanExprContext _localctx, int predIndex) {
+	private boolean numericExpr_sempred(NumericExprContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
 			return precpred(_ctx, 2);
@@ -537,37 +606,42 @@ public class CalculatorParser extends Parser {
 		}
 		return true;
 	}
-	private boolean numericExpr_sempred(NumericExprContext _localctx, int predIndex) {
+	private boolean booleanExpr_sempred(BooleanExprContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 2:
-			return precpred(_ctx, 2);
+			return precpred(_ctx, 5);
 		case 3:
-			return precpred(_ctx, 1);
+			return precpred(_ctx, 4);
+		case 4:
+			return precpred(_ctx, 3);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\20K\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\27V\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\6\2\16\n\2\r\2\16\2\17\3\2\3\2\7\2\24\n"+
 		"\2\f\2\16\2\27\13\2\5\2\31\n\2\3\3\3\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4"+
 		"\5\4%\n\4\3\4\3\4\3\4\3\4\3\4\3\4\7\4-\n\4\f\4\16\4\60\13\4\3\5\3\5\3"+
-		"\5\3\5\3\5\3\5\3\5\3\5\5\5:\n\5\3\5\3\5\3\5\3\5\3\5\3\5\7\5B\n\5\f\5\16"+
-		"\5E\13\5\3\6\3\6\5\6I\n\6\3\6\2\4\6\b\7\2\4\6\b\n\2\5\3\2\4\5\3\2\f\r"+
-		"\3\2\n\13\2Q\2\r\3\2\2\2\4\32\3\2\2\2\6$\3\2\2\2\b9\3\2\2\2\nH\3\2\2\2"+
-		"\f\16\7\3\2\2\r\f\3\2\2\2\16\17\3\2\2\2\17\r\3\2\2\2\17\20\3\2\2\2\20"+
-		"\30\3\2\2\2\21\25\7\t\2\2\22\24\7\3\2\2\23\22\3\2\2\2\24\27\3\2\2\2\25"+
-		"\23\3\2\2\2\25\26\3\2\2\2\26\31\3\2\2\2\27\25\3\2\2\2\30\21\3\2\2\2\30"+
-		"\31\3\2\2\2\31\3\3\2\2\2\32\33\t\2\2\2\33\5\3\2\2\2\34\35\b\4\1\2\35%"+
-		"\5\4\3\2\36\37\7\16\2\2\37 \5\6\4\2 !\7\17\2\2!%\3\2\2\2\"#\7\6\2\2#%"+
-		"\5\6\4\5$\34\3\2\2\2$\36\3\2\2\2$\"\3\2\2\2%.\3\2\2\2&\'\f\4\2\2\'(\7"+
-		"\7\2\2(-\5\6\4\5)*\f\3\2\2*+\7\b\2\2+-\5\6\4\4,&\3\2\2\2,)\3\2\2\2-\60"+
-		"\3\2\2\2.,\3\2\2\2./\3\2\2\2/\7\3\2\2\2\60.\3\2\2\2\61\62\b\5\1\2\62:"+
-		"\5\2\2\2\63\64\7\16\2\2\64\65\5\b\5\2\65\66\7\17\2\2\66:\3\2\2\2\678\7"+
-		"\13\2\28:\5\b\5\59\61\3\2\2\29\63\3\2\2\29\67\3\2\2\2:C\3\2\2\2;<\f\4"+
-		"\2\2<=\t\3\2\2=B\5\b\5\5>?\f\3\2\2?@\t\4\2\2@B\5\b\5\4A;\3\2\2\2A>\3\2"+
-		"\2\2BE\3\2\2\2CA\3\2\2\2CD\3\2\2\2D\t\3\2\2\2EC\3\2\2\2FI\5\6\4\2GI\5"+
-		"\b\5\2HF\3\2\2\2HG\3\2\2\2I\13\3\2\2\2\f\17\25\30$,.9ACH";
+		"\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5B\n\5\3\5\3"+
+		"\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\7\5M\n\5\f\5\16\5P\13\5\3\6\3\6\5\6T\n"+
+		"\6\3\6\2\4\6\b\7\2\4\6\b\n\2\7\3\2\3\4\3\2\f\16\3\2\n\13\3\2\21\24\3\2"+
+		"\25\26\2_\2\r\3\2\2\2\4\32\3\2\2\2\6$\3\2\2\2\bA\3\2\2\2\nS\3\2\2\2\f"+
+		"\16\7\5\2\2\r\f\3\2\2\2\16\17\3\2\2\2\17\r\3\2\2\2\17\20\3\2\2\2\20\30"+
+		"\3\2\2\2\21\25\7\t\2\2\22\24\7\5\2\2\23\22\3\2\2\2\24\27\3\2\2\2\25\23"+
+		"\3\2\2\2\25\26\3\2\2\2\26\31\3\2\2\2\27\25\3\2\2\2\30\21\3\2\2\2\30\31"+
+		"\3\2\2\2\31\3\3\2\2\2\32\33\t\2\2\2\33\5\3\2\2\2\34\35\b\4\1\2\35%\5\2"+
+		"\2\2\36\37\7\17\2\2\37 \5\6\4\2 !\7\20\2\2!%\3\2\2\2\"#\7\13\2\2#%\5\6"+
+		"\4\5$\34\3\2\2\2$\36\3\2\2\2$\"\3\2\2\2%.\3\2\2\2&\'\f\4\2\2\'(\t\3\2"+
+		"\2(-\5\6\4\5)*\f\3\2\2*+\t\4\2\2+-\5\6\4\4,&\3\2\2\2,)\3\2\2\2-\60\3\2"+
+		"\2\2.,\3\2\2\2./\3\2\2\2/\7\3\2\2\2\60.\3\2\2\2\61\62\b\5\1\2\62B\5\4"+
+		"\3\2\63\64\7\17\2\2\64\65\5\b\5\2\65\66\7\20\2\2\66B\3\2\2\2\678\7\6\2"+
+		"\28B\5\b\5\b9:\5\6\4\2:;\t\5\2\2;<\5\6\4\2<B\3\2\2\2=>\5\6\4\2>?\t\6\2"+
+		"\2?@\5\6\4\2@B\3\2\2\2A\61\3\2\2\2A\63\3\2\2\2A\67\3\2\2\2A9\3\2\2\2A"+
+		"=\3\2\2\2BN\3\2\2\2CD\f\7\2\2DE\t\6\2\2EM\5\b\5\bFG\f\6\2\2GH\7\7\2\2"+
+		"HM\5\b\5\7IJ\f\5\2\2JK\7\b\2\2KM\5\b\5\6LC\3\2\2\2LF\3\2\2\2LI\3\2\2\2"+
+		"MP\3\2\2\2NL\3\2\2\2NO\3\2\2\2O\t\3\2\2\2PN\3\2\2\2QT\5\b\5\2RT\5\6\4"+
+		"\2SQ\3\2\2\2SR\3\2\2\2T\13\3\2\2\2\f\17\25\30$,.ALNS";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

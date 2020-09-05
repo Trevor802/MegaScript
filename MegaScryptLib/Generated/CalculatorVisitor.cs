@@ -44,17 +44,17 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitBool([NotNull] CalculatorParser.BoolContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CalculatorParser.booleanExpr"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitBooleanExpr([NotNull] CalculatorParser.BooleanExprContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.numericExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitNumericExpr([NotNull] CalculatorParser.NumericExprContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.booleanExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBooleanExpr([NotNull] CalculatorParser.BooleanExprContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.expression"/>.
 	/// </summary>

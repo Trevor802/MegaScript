@@ -37,19 +37,31 @@ namespace MSLib {
                 var result = context.@bool().Accept(this);
                 return result;
             }
-            CalculatorParser.BooleanExprContext[] exprs = context.booleanExpr();
-            if (exprs.Length == 1) {
-                object result = exprs[0].Accept(this);
+            var bExprs = context.booleanExpr();
+            if (bExprs.Length == 1) {
+                object result = bExprs[0].Accept(this);
                 if (context.Not() != null) {
                     result = !(bool)result;
                 }
                 return result;
             }
-            else if (exprs.Length == 2) {
-                object lhs = exprs[0].Accept(this);
-                object rhs = exprs[1].Accept(this);
+            else if (bExprs.Length == 2) {
+                object lhs = bExprs[0].Accept(this);
+                object rhs = bExprs[1].Accept(this);
                 var op = context.children[1] as ITerminalNode;
                 return BooleanLogicalOperation(lhs, rhs, op);
+            }
+            var nExprs = context.numericExpr();
+            if (nExprs.Length == 2) {
+                object lhs = nExprs[0].Accept(this);
+                object rhs = nExprs[1].Accept(this);
+                var op = context.children[1] as ITerminalNode;
+                if (lhs is int && rhs is int) {
+                    return IntegerRelationalOperation(lhs, rhs, op);
+                }
+                else {
+                    return FloatRelationalOperation(lhs, rhs, op);
+                }
             }
             throw new NotImplementedException();
         }
@@ -107,6 +119,72 @@ namespace MSLib {
                 case CalculatorParser.Or:
                     result = l || r;
                     break;
+                case CalculatorParser.Equal:
+                    result = l == r;
+                    break;
+                case CalculatorParser.NotEqual:
+                    result = l != r;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+            return result;
+        }
+
+        private bool IntegerRelationalOperation(object lhs, object rhs, ITerminalNode op) {
+            int l = Convert.ToInt32(lhs);
+            int r = Convert.ToInt32(rhs);
+            bool result = false;
+            switch (op.Symbol.Type) {
+                case CalculatorParser.Greater:
+                    result = l > r;
+                    break;
+                case CalculatorParser.GreaterEqual:
+                    result = l >= r;
+                    break;
+                case CalculatorParser.Less:
+                    result = l < r;
+                    break;
+                case CalculatorParser.LessEqual:
+                    result = l <= r;
+                    break;
+                case CalculatorParser.Equal:
+                    result = l == r;
+                    break;
+                case CalculatorParser.NotEqual:
+                    result = l != r;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+            return result;
+        }
+
+        private bool FloatRelationalOperation(object lhs, object rhs, ITerminalNode op) {
+            float l = Convert.ToSingle(lhs);
+            float r = Convert.ToSingle(rhs);
+            bool result = false;
+            switch (op.Symbol.Type) {
+                case CalculatorParser.Greater:
+                    result = l > r;
+                    break;
+                case CalculatorParser.GreaterEqual:
+                    result = l >= r;
+                    break;
+                case CalculatorParser.Less:
+                    result = l < r;
+                    break;
+                case CalculatorParser.LessEqual:
+                    result = l <= r;
+                    break;
+                case CalculatorParser.Equal:
+                    result = l == r;
+                    break;
+                case CalculatorParser.NotEqual:
+                    result = l != r;
+                    break;
+                default:
+                    throw new InvalidOperationException();
             }
             return result;
         }
@@ -127,6 +205,9 @@ namespace MSLib {
                     break;
                 case CalculatorParser.Divide:
                     result = l / r;
+                    break;
+                case CalculatorParser.Modulo:
+                    result = l % r;
                     break;
             }
             return result;
@@ -149,6 +230,11 @@ namespace MSLib {
                 case CalculatorParser.Divide:
                     result = l / r;
                     break;
+                case CalculatorParser.Modulo:
+                    result = l % r;
+                    break;
+                default:
+                    throw new InvalidOperationException();
             }
             return result;
         }
