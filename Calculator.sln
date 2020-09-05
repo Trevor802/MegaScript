@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator", "Calculator\Calculator.csproj", "{47E597C9-1EAD-4BBC-B522-1A5A61B13059}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MegaScryptLib", "MegaScryptLib\MegaScryptLib.csproj", "{8ACFCC52-2A59-46DC-984D-F4512D26ECAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MegaScryptTests", "MegaScryptTests\MegaScryptTests.csproj", "{AB48034B-56E8-4CF3-B182-B24AC29CD868}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47E597C9-1EAD-4BBC-B522-1A5A61B13059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47E597C9-1EAD-4BBC-B522-1A5A61B13059}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47E597C9-1EAD-4BBC-B522-1A5A61B13059}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47E597C9-1EAD-4BBC-B522-1A5A61B13059}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ACFCC52-2A59-46DC-984D-F4512D26ECAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ACFCC52-2A59-46DC-984D-F4512D26ECAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ACFCC52-2A59-46DC-984D-F4512D26ECAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ACFCC52-2A59-46DC-984D-F4512D26ECAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB48034B-56E8-4CF3-B182-B24AC29CD868}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB48034B-56E8-4CF3-B182-B24AC29CD868}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB48034B-56E8-4CF3-B182-B24AC29CD868}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB48034B-56E8-4CF3-B182-B24AC29CD868}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
