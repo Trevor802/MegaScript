@@ -2,21 +2,32 @@ grammar Calculator;
 
 /* Parser Rules */
 
-number: Digit+('.'Digit*)?;
-boolean: (False|True);
+number:         Digit+('.'Digit*)?;
+bool:           (False|True);
 
-expression:
-    number |
-    '('expression')' |
-    '-'expression |
-    expression ('*' | '/') expression |
-    expression ('+' | '-') expression;
+booleanExpr:    bool|
+                '('booleanExpr')'|
+                '!'booleanExpr|
+                booleanExpr '&&' booleanExpr|
+                booleanExpr '||' booleanExpr;
+
+numericExpr:     number |
+                '('numericExpr')'|
+                '-'numericExpr |
+                numericExpr ('*' | '/') numericExpr |
+                numericExpr ('+' | '-') numericExpr;
+
+expression:     booleanExpr |
+                numericExpr;
 
 /* Lexer Rules */
 
 Digit:              [0-9];
 True:               'true';
 False:              'false';
+Not:                '!';
+And:                '&&';
+Or:                 '||';
 Dot:                '.';
 Plus:               '+';
 Minus:              '-';

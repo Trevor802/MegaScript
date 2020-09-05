@@ -4,6 +4,8 @@ namespace MegaScrypt
 {
     public class Machine
     {
+        private Calculator m_calculator = new Calculator();
+
         public object Execute(string script)
         {
             throw new NotImplementedException();
@@ -11,8 +13,7 @@ namespace MegaScrypt
 
         public object Evaluate(string expression)
         {
-            Calculator calculator = new Calculator();
-            return calculator.Evaluate(expression);
+            return m_calculator.Evaluate(expression);
         }
     }
 }
