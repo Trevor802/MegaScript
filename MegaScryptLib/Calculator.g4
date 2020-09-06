@@ -5,17 +5,21 @@ program:            (statement | block)*;
 block:				'{' statement* '}' | statement;
 statement:          declaration | assignment | ifStmt | incrementExpr';' | decrementExpr';';
 declaration:        'var' Id ('=' expression)?';';
-assignment:         Id ('='|'+='|'-='|'*='|'/=') expression';';
+fieldDeclaration:	Id ':' (expression | object);
+object:				'{' (fieldDeclaration ',')* fieldDeclaration'}';
+assignment:         (Id('.'Id)*) ('='|'+='|'-='|'*='|'/=') expression';';
 ifStmt:				'if' '(' expression ')' block 
 					('else if' '(' expression ')' block)*
 					('else' block)?;
 incrementExpr:		'++'Id | Id'++';
 decrementExpr:		'--'Id | Id'--';
 expression:         Number | 'false' | 'true' | Id | String | Null |
-					'('expression')'|
-					('+'|'-'|'!')expression|
+					object |
 					incrementExpr|
 					decrementExpr|
+					'('expression')'|
+					expression '.' expression|
+					('+'|'-'|'!')expression|
 					expression ('*' | '/' | '%') expression |
 					expression ('+' | '-') expression|
 					expression ('<'|'>'|'<='|'>=') expression|

@@ -259,87 +259,84 @@ var z;
             }
         }
 
-        //		[Test]
-        //		[TestCase(@"
-        //var obj = {
-        //	x: 3,
-        //	y: -4
-        //};
-        //", "obj.y", -4)]
-        //		[TestCase(@"
-        //var obj = {
-        //	child: {
-        //		x: 26,
-        //		y: 200,
-        //		z: 1
-        //	},
-        //	x: 3,
-        //	y: -4
-        //};
-        //", "obj.child.x", 26)]
-        //		[TestCase(@"
-        //var obj = {
-        //	child: {
-        //		x: 26,
-        //		y: 200,
-        //		z: 1
-        //	},
-        //	x: 3,
-        //	y: -4
-        //};
-        //obj.child.z = 5009;
-        //", "obj.child.z", 5009)]
-        //		[TestCase(@"
-        //var x = 10;
-        //var y = 12;
-        //var z = 14;
-        //var obj = {
-        //	position: {
-        //		x: x,
-        //		y: y,
-        //		z: z
-        //	}
-        //};
-        //", "obj.position.z", 14)]
-        //		[TestCase(@"
-        //var summer = {
-        //	name: ""Summer"",
-        //	age: 17,
-        //	brother: null
-        //};
-        //var morty = {
-        //	name: ""Morty"",
-        //	age: 14,
-        //	sister: summer
-        //};
-        //summer.brother = morty;
-        //", "morty.sister.name", "Summer")]
-        //		[TestCase(@"
-        //var summer = {
-        //	name: ""Summer"",
-        //	age: 17,
-        //	brother: null
-        //};
-        //var morty = {
-        //	name: ""Morty"",
-        //	age: 14,
-        //	sister: summer
-        //};
-        //summer.brother = morty;
-        //", "summer.brother.name", "Morty")]
-        //		public void TestObjects(string script, string expression, object expected)
-        //		{
-        //			try
-        //			{
-        //				machine.Execute(script);
-        //				object result = machine.Evaluate(expression);
-        //				Assert.AreEqual(expected, result);
-        //			}
-        //			catch (System.Exception)
-        //			{
-        //				Assert.Fail();
-        //			}
-        //		}
+        [Test]
+        [TestCase(@"
+        var obj = {
+        	x: 3,
+        	y: -4
+        };
+        ", "obj.y", -4)]
+        [TestCase(@"
+        var obj = {
+        	child: {
+        		x: 26,
+        		y: 200,
+        		z: 1
+        	},
+        	x: 3,
+        	y: -4
+        };
+        ", "obj.child.x", 26)]
+        [TestCase(@"
+        var obj = {
+        	child: {
+        		x: 26,
+        		y: 200,
+        		z: 1
+        	},
+        	x: 3,
+        	y: -4
+        };
+        obj.child.z = 5009;
+        ", "obj.child.z", 5009)]
+        [TestCase(@"
+        var x = 10;
+        var y = 12;
+        var z = 14;
+        var obj = {
+        	position: {
+        		x: x,
+        		y: y,
+        		z: z
+        	}
+        };
+        ", "obj.position.z", 14)]
+        [TestCase(@"
+        var summer = {
+        	name: ""Summer"",
+        	age: 17,
+        	brother: null
+        };
+        var morty = {
+        	name: ""Morty"",
+        	age: 14,
+        	sister: summer
+        };
+        summer.brother = morty;
+        ", "morty.sister.name", "Summer")]
+        [TestCase(@"
+        var summer = {
+        	name: ""Summer"",
+        	age: 17,
+        	brother: null
+        };
+        var morty = {
+        	name: ""Morty"",
+        	age: 14,
+        	sister: summer
+        };
+        summer.brother = morty;
+        ", "summer.brother.name", "Morty")]
+        public void TestObjects(string script, string expression, object expected) {
+            try {
+                machine.Execute(script);
+                object result = machine.Evaluate(expression);
+                Assert.AreEqual(expected, result);
+            }
+            catch (System.Exception) {
+                Assert.Fail();
+            }
+        }
 
 
         //		[Test]

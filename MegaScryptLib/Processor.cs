@@ -2,12 +2,30 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using System.Collections.Generic;
+
 namespace MSLib {
     internal class Processor : CalculatorBaseVisitor<object>{
         private Stack m_stack;
 
         public Processor(Stack stack) {
             m_stack = stack;
+        }
+
+        public override object VisitObject([NotNull] CalculatorParser.ObjectContext context) {
+            var dict = new Dictionary<string, object>();
+            KeyValuePair<string, object> fieldDecl;
+            foreach (var item in context.fieldDeclaration()) {
+                fieldDecl = (KeyValuePair<string, object>)item.Accept(this);
+                dict.Add(fieldDecl.Key, fieldDecl.Value);
+            }
+            return dict;
+        }
+
+        public override object VisitFieldDeclaration([NotNull] CalculatorParser.FieldDeclarationContext context) {
+            var varName = context.Id().Accept(this) as string;
+            var varValue = context.expression().Accept(this);
+            return new KeyValuePair<string, object>(varName, varValue);
         }
 
         public override object VisitBlock([NotNull] CalculatorParser.BlockContext context) {
@@ -32,9 +50,25 @@ namespace MSLib {
         }
 
         public override object VisitAssignment([NotNull] CalculatorParser.AssignmentContext context) {
-            var varName = context.Id().Accept(this) as string;
-            object oldValue = GetValue(context.Id());
+            var varName = "";
+            object oldValue = GetValue(context.Id()[0]);
             object newValue = null;
+            Dictionary<string, object> dict = null;
+            // Assign value to variable in object
+            if (context.Id().Length > 1) {
+                dict = (Dictionary<string, object>)oldValue;
+                for (int i = 1; i < context.Id().Length - 1; i++) {
+                    string k = context.Id()[i].Accept(this) as string;
+                    dict = (Dictionary<string, object>)dict[k];
+                }
+                varName = context.Id()[context.Id().Length - 1].Accept(this) as string;
+                oldValue = dict[varName];
+            }
+            // Assign value to current stack
+            else {
+                varName = context.Id()[0].Accept(this) as string;
+                oldValue = GetValue(context.Id()[0]);
+            }
             // =/+=/-=/*=//=/
             if (context.expression() != null) {
                 newValue = context.expression().Accept(this);
@@ -54,7 +88,12 @@ namespace MSLib {
                     newValue = BinaryOperation(oldValue, newValue, CalculatorParser.Divide);
                     break;
             }
-            m_stack.Set(varName, newValue);
+            if (context.Id().Length > 1) {
+                dict[varName] = newValue;
+            }
+            else {
+                m_stack.Set(varName, newValue);
+            }
             return newValue;
         }
 
@@ -161,15 +200,29 @@ namespace MSLib {
             }
             var exprs = context.expression();
             if (exprs.Length == 1) {
+                if (context.Id() != null) {
+                    var d = exprs[0].Accept(this);
+                    var s = context.Id().Accept(this);
+                    result = ObjectOperation(d, s, CalculatorParser.Dot);
+                    return result;
+                }
                 // ++x, --x
                 var op = context.children[0] as ITerminalNode;
                 result = UnaryOperation(exprs[0], op);
                 return result;
             }
             if (exprs.Length == 2) {
-                var l = exprs[0].Accept(this);
-                var r = exprs[1].Accept(this);
+                object l = null;
+                object r = null;
                 var op = context.children[1] as ITerminalNode;
+                if (op.Symbol.Type == CalculatorParser.Dot) {
+                    l = exprs[0].Accept(this);
+                    r = exprs[1].Id().Accept(this);
+                    result = ObjectOperation(l, r, CalculatorParser.Dot);
+                    return result;
+                }
+                l = exprs[0].Accept(this);
+                r = exprs[1].Accept(this);
                 return BinaryOperation(l, r, op.Symbol.Type);
             }
             throw new InvalidOperationException();
@@ -201,7 +254,15 @@ namespace MSLib {
             return n;
         }
 
+        private object ObjectOperation(object o, object k, int op) {
+            var dict = (Dictionary<string, object>)o;
+            return dict[Convert.ToString(k)];
+        }
+
         private object BinaryOperation(object l, object r, int op) {
+            if (l is Dictionary<string, object> && r is string) {
+                return ObjectOperation(l, r, op);
+            }
             if (l is bool && r is bool) {
                 return BooleanLogicalOperation(l, r, op);
             }
