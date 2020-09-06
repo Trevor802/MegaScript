@@ -3,14 +3,14 @@ grammar Calculator;
 /* Parser Rules */
 program:            (statement | block)*;
 block:				'{' statement* '}' | statement;
-statement:          declaration | assignment | ifStmt | incrementExpr | decrementExpr;
+statement:          declaration | assignment | ifStmt | incrementExpr';' | decrementExpr';';
 declaration:        'var' Id ('=' expression)?';';
 assignment:         Id ('='|'+='|'-='|'*='|'/=') expression';';
 ifStmt:				'if' '(' expression ')' block 
 					('else if' '(' expression ')' block)*
 					('else' block)?;
-incrementExpr:		'++'Id;
-decrementExpr:		'--'Id;
+incrementExpr:		'++'Id | Id'++';
+decrementExpr:		'--'Id | Id'--';
 expression:         Number | 'false' | 'true' | Id |
 					'('expression')'|
 					('+'|'-'|'!')expression|

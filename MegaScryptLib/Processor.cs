@@ -111,16 +111,34 @@ namespace MSLib {
 
         public override object VisitIncrementExpr([NotNull] CalculatorParser.IncrementExprContext context) {
             var varName = context.Id().Accept(this) as string;
-            object varValue = GetValue(context.Id());
-            m_stack.Set(varName, (int)varValue + 1);
-            return GetValue(context.Id());
+            object oldValue = GetValue(context.Id());
+            var newValue = (int)oldValue + 1;
+            var node = context.children[0] as ITerminalNode;
+            m_stack.Set(varName, newValue);
+            // Pre-increment
+            if (node.Symbol.Type == CalculatorParser.Increment) {
+                return GetValue(context.Id());
+            }
+            // Post-increment
+            else {
+                return oldValue;
+            }
         }
 
         public override object VisitDecrementExpr([NotNull] CalculatorParser.DecrementExprContext context) {
             var varName = context.Id().Accept(this) as string;
-            object varValue = GetValue(context.Id());
-            m_stack.Set(varName, (int)varValue - 1);
-            return GetValue(context.Id());
+            object oldValue = GetValue(context.Id());
+            var newValue = (int)oldValue - 1;
+            var node = context.children[0] as ITerminalNode;
+            m_stack.Set(varName, newValue);
+            // Pre-decrement
+            if (node.Symbol.Type == CalculatorParser.Decrement) {
+                return GetValue(context.Id());
+            }
+            // Post-decrement
+            else {
+                return oldValue;
+            }
         }
 
         public override object VisitExpression([NotNull] CalculatorParser.ExpressionContext context) {
