@@ -3,17 +3,19 @@ grammar Calculator;
 /* Parser Rules */
 program:            (statement | block)*;
 block:				'{' statement* '}' | statement;
-statement:          declaration | assignment | ifStmt;
+statement:          declaration | assignment | ifStmt | incrementExpr | decrementExpr;
 declaration:        'var' Id ('=' expression)?';';
-assignment:         Id '=' expression';';
+assignment:         Id ('='|'+='|'-='|'*='|'/=') expression';';
 ifStmt:				'if' '(' expression ')' block 
 					('else if' '(' expression ')' block)*
 					('else' block)?;
-
+incrementExpr:		'++'Id;
+decrementExpr:		'--'Id;
 expression:         Number | 'false' | 'true' | Id |
 					'('expression')'|
-					'-'expression|
-					'!'expression|
+					('+'|'-'|'!')expression|
+					incrementExpr|
+					decrementExpr|
 					expression ('*' | '/' | '%') expression |
 					expression ('+' | '-') expression|
 					expression ('<'|'>'|'<='|'>=') expression|
@@ -31,6 +33,8 @@ True:				'true';
 False:				'false';
 Var:                'var';
 Not:                '!';
+Increment:			'++';
+Decrement:			'--';
 And:                '&&';
 Or:                 '||';
 Dot:                '.';
@@ -47,5 +51,9 @@ GreaterEqual:       '>=';
 LessEqual:          '<=';
 Equal:              '==';
 NotEqual:           '!=';
+AddAss:				'+=';
+MinusAss:			'-=';
+MultiplyAss:		'*=';
+DivideAss:			'/=';
 Id:                 (Letter|'_')(Letter|'_'|Digit)*;
 WhiteSpaces:        [ \t\r\n]+ -> skip;

@@ -68,6 +68,18 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitIfStmt([NotNull] CalculatorParser.IfStmtContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.incrementExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIncrementExpr([NotNull] CalculatorParser.IncrementExprContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.decrementExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDecrementExpr([NotNull] CalculatorParser.DecrementExprContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

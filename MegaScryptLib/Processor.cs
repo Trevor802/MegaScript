@@ -33,12 +33,29 @@ namespace MSLib {
 
         public override object VisitAssignment([NotNull] CalculatorParser.AssignmentContext context) {
             var varName = context.Id().Accept(this) as string;
-            object varValue = null;
+            object oldValue = GetValue(context.Id());
+            object newValue = null;
+            // =/+=/-=/*=//=/
             if (context.expression() != null) {
-                varValue = context.expression().Accept(this);
+                newValue = context.expression().Accept(this);
             }
-            m_stack.Set(varName, varValue);
-            return varValue;
+            var op = context.children[1] as ITerminalNode;
+            switch (op.Symbol.Type) {
+                case CalculatorParser.AddAss:
+                    newValue = BinaryOperation(oldValue, newValue, CalculatorParser.Plus);
+                    break;
+                case CalculatorParser.MinusAss:
+                    newValue = BinaryOperation(oldValue, newValue, CalculatorParser.Minus);
+                    break;
+                case CalculatorParser.MultiplyAss:
+                    newValue = BinaryOperation(oldValue, newValue, CalculatorParser.Multiply);
+                    break;
+                case CalculatorParser.DivideAss:
+                    newValue = BinaryOperation(oldValue, newValue, CalculatorParser.Divide);
+                    break;
+            }
+            m_stack.Set(varName, newValue);
+            return newValue;
         }
 
         public override object VisitIfStmt([NotNull] CalculatorParser.IfStmtContext context) {
@@ -92,9 +109,23 @@ namespace MSLib {
             return m_stack.Get(node.GetText());
         }
 
+        public override object VisitIncrementExpr([NotNull] CalculatorParser.IncrementExprContext context) {
+            var varName = context.Id().Accept(this) as string;
+            object varValue = GetValue(context.Id());
+            m_stack.Set(varName, (int)varValue + 1);
+            return GetValue(context.Id());
+        }
+
+        public override object VisitDecrementExpr([NotNull] CalculatorParser.DecrementExprContext context) {
+            var varName = context.Id().Accept(this) as string;
+            object varValue = GetValue(context.Id());
+            m_stack.Set(varName, (int)varValue - 1);
+            return GetValue(context.Id());
+        }
+
         public override object VisitExpression([NotNull] CalculatorParser.ExpressionContext context) {
+            object result = null;
             if (context.children.Count == 1) {
-                object result = null;
                 // If it is an Id, then return the value
                 if (context.Id() != null) {
                     result = GetValue(context.Id());
@@ -106,33 +137,47 @@ namespace MSLib {
             }
             var exprs = context.expression();
             if (exprs.Length == 1) {
-                var n = exprs[0].Accept(this);
+                // ++x, --x
                 var op = context.children[0] as ITerminalNode;
-                return UnaryOperation(n, op);
+                result = UnaryOperation(exprs[0], op);
+                return result;
             }
             if (exprs.Length == 2) {
                 var l = exprs[0].Accept(this);
                 var r = exprs[1].Accept(this);
                 var op = context.children[1] as ITerminalNode;
-                return BinaryOperation(l, r, op);
+                return BinaryOperation(l, r, op.Symbol.Type);
             }
             throw new InvalidOperationException();
         }
 
-        private object UnaryOperation(object n, ITerminalNode op) {
-            if (op.Symbol.Type == CalculatorParser.Not && n is bool) {
-                return !(bool)n;
-            }
-            if (op.Symbol.Type == CalculatorParser.Minus && n is int) {
-                return -(int)n;
-            }
-            if (op.Symbol.Type == CalculatorParser.Minus && n is float) {
-                return -(float)n;
+        private object UnaryOperation(CalculatorParser.ExpressionContext e, ITerminalNode op) {
+            var n = e.Accept(this);
+            var varName = "";
+            object varValue = null;
+            switch (op.Symbol.Type) {
+                case CalculatorParser.Not:
+                    return !(bool)n;
+                case CalculatorParser.Minus:
+                    if (n is int)
+                        return -(int)n;
+                    else
+                        return -(float)n;
+                //case CalculatorParser.Increment:
+                //    varName = e.Id().Accept(this) as string;
+                //    varValue = GetValue(e.Id());
+                //    m_stack.Set(varName, (int)varValue + 1);
+                //    return GetValue(e.Id());
+                //case CalculatorParser.Decrement:
+                //    varName = e.Id().Accept(this) as string;
+                //    varValue = GetValue(e.Id());
+                //    m_stack.Set(varName, (int)varValue - 1);
+                //    return GetValue(e.Id());
             }
             return n;
         }
 
-        private object BinaryOperation(object l, object r, ITerminalNode op) {
+        private object BinaryOperation(object l, object r, int op) {
             if (l is bool && r is bool) {
                 return BooleanLogicalOperation(l, r, op); 
             }
@@ -142,11 +187,11 @@ namespace MSLib {
             return FloatBinaryOperation(l, r, op);
         }
 
-        private bool BooleanLogicalOperation(object lhs, object rhs, ITerminalNode op) {
+        private bool BooleanLogicalOperation(object lhs, object rhs, int op) {
             bool l = Convert.ToBoolean(lhs);
             bool r = Convert.ToBoolean(rhs);
             bool result = false;
-            switch (op.Symbol.Type) {
+            switch (op) {
                 case CalculatorParser.And:
                     result = l && r;
                     break;
@@ -165,11 +210,11 @@ namespace MSLib {
             return result;
         }
 
-        private object IntegerBinaryOperation(object lhs, object rhs, ITerminalNode op) {
+        private object IntegerBinaryOperation(object lhs, object rhs, int op) {
             int l = Convert.ToInt32(lhs);
             int r = Convert.ToInt32(rhs);
             object result = null;
-            switch (op.Symbol.Type) {
+            switch (op) {
                 case CalculatorParser.Plus:
                     result = l + r;
                     break;
@@ -209,11 +254,11 @@ namespace MSLib {
             return result;
         }
 
-        private object FloatBinaryOperation(object lhs, object rhs, ITerminalNode op){
+        private object FloatBinaryOperation(object lhs, object rhs, int op){
             float l = Convert.ToSingle(lhs);
             float r = Convert.ToSingle(rhs);
             object result = null;
-            switch (op.Symbol.Type){
+            switch (op){
                 case CalculatorParser.Plus: 
                     result = l + r;
                     break;

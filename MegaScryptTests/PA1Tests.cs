@@ -168,58 +168,58 @@ var z;
             }
         }
 
-        //		[Test]
-        //		// increment / decrement
-        //		[TestCase(@"
-        //var x = 0;
-        //x++;
-        //++x;
-        //", "x", 2)]
-        //		[TestCase(@"
-        //var x = 0;
-        //x--;
-        //--x;
-        //", "x", -2)]
-        //		[TestCase(@"
-        //var x = 0;
-        //x++;
-        //x--;
-        //++x;
-        //--x;
-        //", "x", 0)]
-        //		[TestCase(@"
-        //var y = 0;
-        //var x = y++;
-        //", "x", 0)]
-        //		[TestCase(@"
-        //var y = 0;
-        //var x = ++y;
-        //", "x", 1)]
-        //		[TestCase(@"
-        //var y = 0;
-        //var x = y--;
-        //", "x", 0)]
-        //		[TestCase(@"
-        //var y = 0;
-        //var x = --y;
-        //", "x", -1)]
-        //		// assignment operators
-        //		[TestCase(@"
-        //var i = -514;
-        //i *= 10;
-        //", "i", -514*10)]
-        //		[TestCase(@"
-        //var f = -514;
-        //f /= 10.0;
-        //", "f", -514/10f)]
-        //		[TestCase(@"
-        //var f = 103.;
-        //f += 10.0;
-        //", "f", 103f + 10f)]
-        //		[TestCase(@"
-        //var i = 103;
-        //i -= 10;
-        //", "i", 103-10)]
+        [Test]
+        // increment / decrement
+        [TestCase(@"
+        var x = 0;
+        x++;
+        ++x;
+        ", "x", 2)]
+        [TestCase(@"
+        var x = 0;
+        x--;
+        --x;
+        ", "x", -2)]
+        [TestCase(@"
+        var x = 0;
+        x++;
+        x--;
+        ++x;
+        --x;
+        ", "x", 0)]
+        [TestCase(@"
+        var y = 0;
+        var x = y++;
+        ", "x", 0)]
+        [TestCase(@"
+        var y = 0;
+        var x = ++y;
+        ", "x", 1)]
+        [TestCase(@"
+        var y = 0;
+        var x = y--;
+        ", "x", 0)]
+        [TestCase(@"
+        var y = 0;
+        var x = --y;
+        ", "x", -1)]
+        // assignment operators
+        [TestCase(@"
+        var i = -514;
+        i *= 10;
+        ", "i", -514 * 10)]
+        [TestCase(@"
+        var f = -514;
+        f /= 10.0;
+        ", "f", -514 / 10f)]
+        [TestCase(@"
+        var f = 103.;
+        f += 10.0;
+        ", "f", 103f + 10f)]
+        [TestCase(@"
+        var i = 103;
+        i -= 10;
+        ", "i", 103 - 10)]
         //		// string assignment & operations
         //		[TestCase("var x = \"hello world\";", "x", "hello world")]
         //		[TestCase("var a = \"hello \"; var b = \"world\"; var x = a + b;", "x", "hello world")]
@@ -244,23 +244,20 @@ var z;
         //if(y == null)
         //	x = true;
         //", "x", true)]
-        //		// booleans
-        //		[TestCase(@"var b = true && false;", "b", false)]
-        //		[TestCase(@"var b = true || false;", "b", true)]
-        //		[TestCase(@"var a = false; var b = !a;", "b", true)]
-        //		public void TestVariables(string script, string expression, object expected)
-        //		{
-        //			try
-        //			{
-        //				machine.Execute(script);
-        //				object result = machine.Evaluate(expression);
-        //				Assert.AreEqual(expected, result);
-        //			}
-        //			catch (System.Exception)
-        //			{
-        //				Assert.Fail();
-        //			}
-        //		}
+        // booleans
+        [TestCase(@"var b = true && false;", "b", false)]
+        [TestCase(@"var b = true || false;", "b", true)]
+        [TestCase(@"var a = false; var b = !a;", "b", true)]
+        public void TestVariables(string script, string expression, object expected) {
+            try {
+                machine.Execute(script);
+                object result = machine.Evaluate(expression);
+                Assert.AreEqual(expected, result);
+            }
+            catch (System.Exception) {
+                Assert.Fail();
+            }
+        }
 
         //		[Test]
         //		[TestCase(@"
