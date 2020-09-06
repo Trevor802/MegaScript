@@ -226,24 +226,24 @@ var z;
         [TestCase("var x = \"hello \"; x += \"world\";", "x", "hello world")]
         [TestCase("var x = \"world\"; x = \"hello \" + x;", "x", "hello world")]
         // nulls
-        //[TestCase(@"
-        //var x;
-        //", "x", null)]
-        //[TestCase(@"
-        //var x = null;
-        //", "x", null)]
-        //[TestCase(@"
-        //var y = 5;
-        //var x = false;
-        //if(y != null)
-        //	x = true;
-        //", "x", true)]
-        //[TestCase(@"
-        //var y = null;
-        //var x = false;
-        //if(y == null)
-        //	x = true;
-        //", "x", true)]
+        [TestCase(@"
+        var x;
+        ", "x", null)]
+        [TestCase(@"
+        var x = null;
+        ", "x", null)]
+        [TestCase(@"
+        var y = 5;
+        var x = false;
+        if(y != null)
+        	x = true;
+        ", "x", true)]
+        [TestCase(@"
+        var y = null;
+        var x = false;
+        if(y == null)
+        	x = true;
+        ", "x", true)]
         // booleans
         [TestCase(@"var b = true && false;", "b", false)]
         [TestCase(@"var b = true || false;", "b", true)]

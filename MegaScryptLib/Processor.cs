@@ -105,6 +105,8 @@ namespace MSLib {
                     s = node.GetText();
                     s = s.Substring(1, s.Length - 2);
                     return s;
+                case CalculatorParser.Null:
+                    return null;
             }
             return base.VisitTerminal(node);
         }

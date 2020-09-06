@@ -11,7 +11,7 @@ ifStmt:				'if' '(' expression ')' block
 					('else' block)?;
 incrementExpr:		'++'Id | Id'++';
 decrementExpr:		'--'Id | Id'--';
-expression:         Number | 'false' | 'true' | Id | String |
+expression:         Number | 'false' | 'true' | Id | String | Null |
 					'('expression')'|
 					('+'|'-'|'!')expression|
 					incrementExpr|
@@ -32,6 +32,7 @@ Number:             Digit+('.'Digit*)?;
 True:				'true';
 False:				'false';
 Var:                'var';
+Null:				'null';
 Not:                '!';
 Increment:			'++';
 Decrement:			'--';
