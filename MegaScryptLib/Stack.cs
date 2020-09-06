@@ -46,10 +46,12 @@ namespace MSLib
                 }
                 stack.m_dict[varName] = value;
             }
-            if (!m_dict.ContainsKey(varName)) {
-                throw new KeyNotFoundException();
+            else {
+                if (!m_dict.ContainsKey(varName)) {
+                    throw new KeyNotFoundException();
+                }
+                m_dict[varName] = value;
             }
-            m_dict[varName] = value;
         }
 
         public bool Has(string varName, bool allowParentChaining = true)

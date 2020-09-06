@@ -38,6 +38,12 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitProgram([NotNull] CalculatorParser.ProgramContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.block"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBlock([NotNull] CalculatorParser.BlockContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.statement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

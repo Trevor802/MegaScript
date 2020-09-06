@@ -10,6 +10,17 @@ namespace MSLib {
             m_stack = stack;
         }
 
+        public override object VisitBlock([NotNull] CalculatorParser.BlockContext context) {
+            var stack = new Stack(m_stack);
+            // Save the old stack's reference
+            var oldStack = m_stack;
+            m_stack = stack;
+            var result = base.VisitBlock(context);
+            // Retrieve the old stack
+            m_stack = oldStack;
+            return result;
+        }
+
         public override object VisitDeclaration([NotNull] CalculatorParser.DeclarationContext context) {
             var varName = context.Id().Accept(this) as string;
             object varValue = null;
@@ -47,10 +58,10 @@ namespace MSLib {
                     return true;
                 case CalculatorParser.False:
                     return false;
-                case CalculatorParser.Id: {
-                        return node.GetText();
-                    }
+                case CalculatorParser.Id:
+                    return node.GetText();
             }
+            return base.VisitTerminal(node);
             throw new InvalidOperationException();
         }
 

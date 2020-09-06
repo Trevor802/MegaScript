@@ -1,7 +1,8 @@
 grammar Calculator;
 
 /* Parser Rules */
-program:            statement*;
+program:            (statement | block)*;
+block:				'{' statement* '}';
 statement:          (declaration | assignment);
 declaration:        'var' Id ('=' expression)?';';
 assignment:         Id '=' expression';';
