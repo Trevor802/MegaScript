@@ -82,9 +82,10 @@ namespace MSLib {
         }
 
         public override object VisitTerminal(ITerminalNode node) {
+            string s = "";
             switch (node.Symbol.Type) {
                 case CalculatorParser.Number: {
-                        string s = node.GetText();
+                        s = node.GetText();
                         if (s.Contains(".")) {
                             float f = float.Parse(s);
                             return f;
@@ -100,9 +101,12 @@ namespace MSLib {
                     return false;
                 case CalculatorParser.Id:
                     return node.GetText();
+                case CalculatorParser.String:
+                    s = node.GetText();
+                    s = s.Substring(1, s.Length - 2);
+                    return s;
             }
             return base.VisitTerminal(node);
-            throw new InvalidOperationException();
         }
 
         protected object GetValue(ITerminalNode node) {
@@ -171,8 +175,8 @@ namespace MSLib {
 
         private object UnaryOperation(CalculatorParser.ExpressionContext e, ITerminalNode op) {
             var n = e.Accept(this);
-            var varName = "";
-            object varValue = null;
+            //var varName = "";
+            //object varValue = null;
             switch (op.Symbol.Type) {
                 case CalculatorParser.Not:
                     return !(bool)n;
@@ -197,7 +201,10 @@ namespace MSLib {
 
         private object BinaryOperation(object l, object r, int op) {
             if (l is bool && r is bool) {
-                return BooleanLogicalOperation(l, r, op); 
+                return BooleanLogicalOperation(l, r, op);
+            }
+            if (l is string && r is string) {
+                return StringBinaryOperation(l, r, op);
             }
             if (l is int && r is int) {
                 return IntegerBinaryOperation(l, r, op);
@@ -224,6 +231,18 @@ namespace MSLib {
                     break;
                 default:
                     throw new InvalidOperationException();
+            }
+            return result;
+        }
+
+        private object StringBinaryOperation(object lhs, object rhs, int op) {
+            string l = Convert.ToString(lhs);
+            string r = Convert.ToString(rhs);
+            object result = null;
+            switch (op) {
+                case CalculatorParser.Plus:
+                    result = l + r;
+                    break;
             }
             return result;
         }

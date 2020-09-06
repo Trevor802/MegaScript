@@ -11,7 +11,7 @@ ifStmt:				'if' '(' expression ')' block
 					('else' block)?;
 incrementExpr:		'++'Id | Id'++';
 decrementExpr:		'--'Id | Id'--';
-expression:         Number | 'false' | 'true' | Id |
+expression:         Number | 'false' | 'true' | Id | String |
 					'('expression')'|
 					('+'|'-'|'!')expression|
 					incrementExpr|
@@ -55,5 +55,6 @@ AddAss:				'+=';
 MinusAss:			'-=';
 MultiplyAss:		'*=';
 DivideAss:			'/=';
+String:				'"'.*?'"';
 Id:                 (Letter|'_')(Letter|'_'|Digit)*;
 WhiteSpaces:        [ \t\r\n]+ -> skip;

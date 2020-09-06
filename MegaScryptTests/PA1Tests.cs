@@ -220,25 +220,25 @@ var z;
         var i = 103;
         i -= 10;
         ", "i", 103 - 10)]
-        //		// string assignment & operations
-        //		[TestCase("var x = \"hello world\";", "x", "hello world")]
-        //		[TestCase("var a = \"hello \"; var b = \"world\"; var x = a + b;", "x", "hello world")]
-        //		[TestCase("var x = \"hello \"; x += \"world\";", "x", "hello world")]
-        //		[TestCase("var x = \"world\"; x = \"hello \" + x;", "x", "hello world")]
-        //		// nulls
-        //		[TestCase(@"
+        // string assignment & operations
+        [TestCase("var x = \"hello world\";", "x", "hello world")]
+        [TestCase("var a = \"hello \"; var b = \"world\"; var x = a + b;", "x", "hello world")]
+        [TestCase("var x = \"hello \"; x += \"world\";", "x", "hello world")]
+        [TestCase("var x = \"world\"; x = \"hello \" + x;", "x", "hello world")]
+        // nulls
+        //[TestCase(@"
         //var x;
         //", "x", null)]
-        //		[TestCase(@"
+        //[TestCase(@"
         //var x = null;
         //", "x", null)]
-        //		[TestCase(@"
+        //[TestCase(@"
         //var y = 5;
         //var x = false;
         //if(y != null)
         //	x = true;
         //", "x", true)]
-        //		[TestCase(@"
+        //[TestCase(@"
         //var y = null;
         //var x = false;
         //if(y == null)
