@@ -3,10 +3,10 @@ using MSLib;
 class Program {
     static void Main(string[] args) {
         string line;
-        Calculator calculator = new Calculator();
+        Machine machine = new Machine();
         while (!String.IsNullOrEmpty(line = Console.ReadLine())) {
-            var result = calculator.Evaluate(line);
-            Console.WriteLine($"{line} = {result}");
+            var result = machine.Execute(line);
+            Console.Write(machine.DumpStack());
         }
     }
 }

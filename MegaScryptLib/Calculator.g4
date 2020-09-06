@@ -1,31 +1,31 @@
 grammar Calculator;
 
 /* Parser Rules */
+program:            statement*;
+statement:          (declaration | assignment);
+declaration:        'var' Id ('=' expression)?';';
+assignment:         Id '=' expression';';
 
-number:         Digit+('.'Digit*)?;
-bool:           ('false'|'true');
-
-numericExpr:     number |
-                '('numericExpr')'|
-                '-'numericExpr |
-                numericExpr ('*' | '/' | '%') numericExpr |
-                numericExpr ('+' | '-') numericExpr;
-
-booleanExpr:    bool|
-                '('booleanExpr')'|
-                '!'booleanExpr|
-                booleanExpr ('==' | '!=') booleanExpr|
-                booleanExpr '&&' booleanExpr|
-                booleanExpr '||' booleanExpr|
-                numericExpr ('<'|'>'|'<='|'>=') numericExpr|
-                numericExpr ('=='|'!=') numericExpr;
-
-expression:     booleanExpr |
-                numericExpr;
+expression:         Number | 'false' | 'true' | Id |
+					'('expression')'|
+					'-'expression|
+					'!'expression|
+					expression ('*' | '/' | '%') expression |
+					expression ('+' | '-') expression|
+					expression ('<'|'>'|'<='|'>=') expression|
+					expression ('=='|'!=') expression|
+					expression '&&' expression|
+					expression '||' expression;
+					
 
 /* Lexer Rules */
 
-Digit:              [0-9];
+fragment Digit:     [0-9];
+fragment Letter:    [a-zA-Z];
+Number:             Digit+('.'Digit*)?;
+True:				'true';
+False:				'false';
+Var:                'var';
 Not:                '!';
 And:                '&&';
 Or:                 '||';
@@ -43,4 +43,5 @@ GreaterEqual:       '>=';
 LessEqual:          '<=';
 Equal:              '==';
 NotEqual:           '!=';
+Id:                 (Letter|'_')(Letter|'_'|Digit)*;
 WhiteSpaces:        [ \t\r\n]+ -> skip;

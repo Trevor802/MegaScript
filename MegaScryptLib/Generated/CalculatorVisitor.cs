@@ -32,29 +32,29 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CalculatorParser.number"/>.
+	/// Visit a parse tree produced by <see cref="CalculatorParser.program"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNumber([NotNull] CalculatorParser.NumberContext context);
+	Result VisitProgram([NotNull] CalculatorParser.ProgramContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CalculatorParser.bool"/>.
+	/// Visit a parse tree produced by <see cref="CalculatorParser.statement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitBool([NotNull] CalculatorParser.BoolContext context);
+	Result VisitStatement([NotNull] CalculatorParser.StatementContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CalculatorParser.numericExpr"/>.
+	/// Visit a parse tree produced by <see cref="CalculatorParser.declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNumericExpr([NotNull] CalculatorParser.NumericExprContext context);
+	Result VisitDeclaration([NotNull] CalculatorParser.DeclarationContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CalculatorParser.booleanExpr"/>.
+	/// Visit a parse tree produced by <see cref="CalculatorParser.assignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitBooleanExpr([NotNull] CalculatorParser.BooleanExprContext context);
+	Result VisitAssignment([NotNull] CalculatorParser.AssignmentContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.expression"/>.
 	/// </summary>
