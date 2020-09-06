@@ -41,6 +41,29 @@ namespace MSLib {
             return varValue;
         }
 
+        public override object VisitIfStmt([NotNull] CalculatorParser.IfStmtContext context) {
+            var exprs = context.expression();
+            var blocks = context.block();
+            object result = null;
+            bool hasElse = blocks.Length - exprs.Length == 1;
+            bool condition = Convert.ToBoolean(context.expression()[0].Accept(this));
+            if (condition) {
+                result = context.block()[0].Accept(this);
+                return result;
+            }
+            for(int i = 1; i < (hasElse ? exprs.Length -1 : exprs.Length); i++) {
+                condition = Convert.ToBoolean(context.expression()[i].Accept(this));
+                if (condition) {
+                    result = context.block()[i].Accept(this);
+                    return result;
+                }
+            }
+            if (hasElse) {
+                result = context.block()[context.block().Length - 1].Accept(this);
+            }
+            return result;
+        }
+
         public override object VisitTerminal(ITerminalNode node) {
             switch (node.Symbol.Type) {
                 case CalculatorParser.Number: {
@@ -118,78 +141,6 @@ namespace MSLib {
             }
             return FloatBinaryOperation(l, r, op);
         }
-
-        //public override object VisitBooleanExpr([NotNull] CalculatorParser.BooleanExprContext context) {
-        //    if (context.@bool() != null) {
-        //        var result = context.@bool().Accept(this);
-        //        return result;
-        //    }
-        //    if (context.id() != null) {
-        //        return m_stack.Get(context.id().Accept(this) as string);
-        //    }
-        //    var bExprs = context.booleanExpr();
-        //    if (bExprs.Length == 1) {
-        //        object result = bExprs[0].Accept(this);
-        //        if (context.Not() != null) {
-        //            result = !(bool)result;
-        //        }
-        //        return result;
-        //    }
-        //    else if (bExprs.Length == 2) {
-        //        object lhs = bExprs[0].Accept(this);
-        //        object rhs = bExprs[1].Accept(this);
-        //        var op = context.children[1] as ITerminalNode;
-        //        return BooleanLogicalOperation(lhs, rhs, op);
-        //    }
-        //    var nExprs = context.numericExpr();
-        //    if (nExprs.Length == 2) {
-        //        object lhs = nExprs[0].Accept(this);
-        //        object rhs = nExprs[1].Accept(this);
-        //        var op = context.children[1] as ITerminalNode;
-        //        if (lhs is int && rhs is int) {
-        //            return IntegerRelationalOperation(lhs, rhs, op);
-        //        }
-        //        else {
-        //            return FloatRelationalOperation(lhs, rhs, op);
-        //        }
-        //    }
-        //    throw new NotImplementedException();
-        //}
-
-        //public override object VisitNumericExpr([NotNull] CalculatorParser.NumericExprContext context) {
-        //    if (context.number() != null) {
-        //        var result = context.number().Accept(this);
-        //        return result;
-        //    }
-        //    if (context.id() != null) {
-        //        return m_stack.Get(context.id().Accept(this) as string);
-        //    }
-        //    CalculatorParser.NumericExprContext[] exprs = context.numericExpr();
-        //    if (exprs.Length == 1) {
-        //        object result = exprs[0].Accept(this);
-        //        if (context.Minus() != null) {
-        //            if (result is int) {
-        //                return -(int)result;
-        //            }
-        //            else {
-        //                return -(float)result;
-        //            }
-        //        }
-        //        return result;
-        //    }
-        //    else if (exprs.Length == 2) {
-        //        object lhs = exprs[0].Accept(this);
-        //        object rhs = exprs[1].Accept(this);
-        //        var op = context.children[1] as ITerminalNode;
-        //        if (lhs is int && rhs is int) {
-        //            return IntegerBinaryOperation(lhs, rhs, op);
-        //        }
-        //        else {
-        //            return FloatBinaryOperation(lhs, rhs, op);
-        //        }
-        //    }
-        //    throw new NotImplementedException();
-        //}
 
         private bool BooleanLogicalOperation(object lhs, object rhs, ITerminalNode op) {
             bool l = Convert.ToBoolean(lhs);

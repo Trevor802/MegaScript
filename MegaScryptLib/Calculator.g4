@@ -2,10 +2,13 @@ grammar Calculator;
 
 /* Parser Rules */
 program:            (statement | block)*;
-block:				'{' statement* '}';
-statement:          (declaration | assignment);
+block:				'{' statement* '}' | statement;
+statement:          declaration | assignment | ifStmt;
 declaration:        'var' Id ('=' expression)?';';
 assignment:         Id '=' expression';';
+ifStmt:				'if' '(' expression ')' block 
+					('else if' '(' expression ')' block)*
+					('else' block)?;
 
 expression:         Number | 'false' | 'true' | Id |
 					'('expression')'|

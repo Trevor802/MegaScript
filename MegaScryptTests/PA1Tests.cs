@@ -107,69 +107,66 @@ var z;
             }
         }
 
-        //		[Test]
-        //		[TestCase(@"
-        //var x = 5;
-        //var pass = false;
-        //if(x > 0) {
-        //	pass = true;
-        //}
-        //")]
-        //		[TestCase(@"
-        //var x = 5;
-        //var pass = false;
-        //if(x > 0) {
-        //	pass = true;
-        //} else {
-        //	pass = false;
-        //}
-        //")]
-        //		[TestCase(@"
-        //var x = 5;
-        //var pass = false;
-        //if(x < 0) {
-        //	pass = false;
-        //} else {
-        //	pass = true;
-        //}
-        //")]
-        //		[TestCase(@"
-        //var pass = false;
-        //if(-1 > 0) {
-        //	pass = false;
-        //} else if(1 < 0) {
-        //	pass = false;
-        //} else if(2 == 3) {
-        //	pass = false;
-        //} else {
-        //	pass = true;
-        //}
-        //")]
-        //		[TestCase(@"
-        //var pass = false;
-        //if(1 > 0)
-        //	pass = true;
-        //else if(1 < 0)
-        //	pass = false;
-        //else if(2 == 3)
-        //	pass = false;
-        //else
-        //	pass = false;
-        //")]
-        //		public void TestIf(string script)
-        //		{
-        //			try
-        //			{
-        //				machine.Execute(script);
+        [Test]
+        [TestCase(@"
+        var x = 5;
+        var pass = false;
+        if(x > 0) {
+        	pass = true;
+        }
+        ")]
+        [TestCase(@"
+        var x = 5;
+        var pass = false;
+        if(x > 0) {
+        	pass = true;
+        } else {
+        	pass = false;
+        }
+        ")]
+        [TestCase(@"
+        var x = 5;
+        var pass = false;
+        if(x < 0) {
+        	pass = false;
+        } else {
+        	pass = true;
+        }
+        ")]
+        [TestCase(@"
+        var pass = false;
+        if(-1 > 0) {
+        	pass = false;
+        } else if(1 < 0) {
+        	pass = false;
+        } else if(2 == 3) {
+        	pass = false;
+        } else {
+        	pass = true;
+        }
+        ")]
+        [TestCase(@"
+        var pass = false;
+        if(1 > 0)
+        	pass = true;
+        else if(1 < 0)
+        	pass = false;
+        else if(2 == 3)
+        	pass = false;
+        else
+        	pass = false;
+        ")]
+        public void TestIf(string script) {
+            try {
+                machine.Execute(script);
 
-        //				object pass = machine.Evaluate("pass");
-        //				Assert.AreEqual(true, pass);
-        //			}
-        //			catch (System.Exception)
-        //			{
-        //				Assert.Fail();
-        //			}
-        //		}
+                object pass = machine.Evaluate("pass");
+                Assert.AreEqual(true, pass);
+            }
+            catch (System.Exception) {
+                Assert.Fail();
+            }
+        }
 
         //		[Test]
         //		// increment / decrement
