@@ -16,7 +16,12 @@ namespace MSLib
 
         public void Declare(string varName, object value = null)
         {
-            m_dict.Add(varName, value);
+            try {
+                m_dict.Add(varName, value);
+            }
+            catch (ArgumentException e) {
+                throw new Exception("Variable is already declared");
+            }
         }
 
         public object Get(string varName, bool allowParentChaining = true)

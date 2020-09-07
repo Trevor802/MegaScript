@@ -14,15 +14,15 @@ class Program {
                 sb.AppendLine(line);
             }
             else {
-                //try {
-                //    machine.Execute(sb.ToString());
-                //    Console.Write(machine.DumpStack());
-                //}
-                //catch (Exception ex) {
-                //    Console.WriteLine(ex.Message);
-                //}
-                machine.Execute(sb.ToString());
-                Console.Write(machine.DumpStack());
+                try {
+                    machine.Execute(sb.ToString());
+                    Console.Write(machine.DumpStack());
+                }
+                catch (Exception ex) {
+                    Console.WriteLine(ex.Message);
+                }
+                //machine.Execute(sb.ToString());
+                //Console.Write(machine.DumpStack());
                 sb.Clear();
             }
         }

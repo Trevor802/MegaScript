@@ -3,7 +3,7 @@ grammar Calculator;
 /* Parser Rules */
 program:            (statement | block)*;
 block:				'{' statement* '}' | statement;
-statement:          declaration | assignment | ifStmt | incrementExpr';' | decrementExpr';';
+statement:          declaration | assignment | ifStmt | incrementExpr';' | decrementExpr';' | expression;
 declaration:        'var' Id ('=' expression)?';';
 fieldDeclaration:	Id ':' (expression | object);
 object:				'{' (fieldDeclaration ',')* fieldDeclaration'}';

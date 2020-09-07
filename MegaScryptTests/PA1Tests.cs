@@ -339,75 +339,65 @@ var z;
         }
 
 
-        //		[Test]
-        //		[TestCase(@"
-        //var pass = true;
-        //// pass = false;
-        //")]
-        //		[TestCase(@"
-        //var pass = true;
-        ///*
-        //	pass = false;
-        //	multiline comment
-        //*/
-        ///* pass = false; */
-        //")]
-        //		public void TestComments(string script)
-        //		{
-        //			try
-        //			{
-        //				machine.Execute(script);
-        //				object pass = machine.Evaluate("pass");
-        //				Assert.AreEqual(true, pass);
-        //			}
-        //			catch(System.Exception)
-        //			{
-        //				Assert.Fail();
-        //			}
-        //		}
+        [Test]
+        [TestCase(@"
+        var pass = true;
+        // pass = false;
+        ")]
+        [TestCase(@"
+        var pass = true;
+        /*
+        	pass = false;
+        	multiline comment
+        */
+        /* pass = false; */
+        ")]
+        public void TestComments(string script) {
+            try {
+                machine.Execute(script);
+                object pass = machine.Evaluate("pass");
+                Assert.AreEqual(true, pass);
+            }
+            catch (System.Exception) {
+                Assert.Fail();
+            }
+        }
 
-        //		// error handling
-        //		[Test]
-        //		[TestCase("invalid syntax", null)]
-        //		[TestCase(@"
-        //x = 5;
-        //", new string[] { "undeclared", "not declared" })]
-        //		[TestCase(@"
-        //var x = 5;
-        //var x = 2;
-        //", new string[]{"already declared", "redeclared"})]
-        //		[TestCase(@"
-        //var y = 0;
-        //var z = x + y;
-        //", new string[]{"undeclared", "not declared"})]
-        //		public void TestErrors(string script, string[] matches)
-        //		{
-        //			System.Exception exception = null;
-        //			try
-        //			{
-        //				machine.Execute(script);
-        //			}
-        //			catch(System.Exception ex)
-        //			{
-        //				exception = ex;
-        //			}
+        // error handling
+        [Test]
+        [TestCase("invalid syntax", null)]
+        [TestCase(@"
+        x = 5;
+        ", new string[] { "undeclared", "not declared" })]
+        [TestCase(@"
+        var x = 5;
+        var x = 2;
+        ", new string[] { "already declared", "redeclared" })]
+        [TestCase(@"
+        var y = 0;
+        var z = x + y;
+        ", new string[] { "undeclared", "not declared" })]
+        public void TestErrors(string script, string[] matches) {
+            System.Exception exception = null;
+            try {
+                machine.Execute(script);
+            }
+            catch (System.Exception ex) {
+                exception = ex;
+            }
 
-        //			Assert.NotNull(exception);
+            Assert.NotNull(exception);
 
-        //			if (matches != null)
-
-        //			{
-        //				bool match = false;
-        //				foreach (string s in matches)
-        //				{
-        //					if (exception.Message.Contains(s, System.StringComparison.InvariantCultureIgnoreCase))
-        //					{
-        //						match = true;
-        //						break;
-        //					}
-        //				}
-        //				Assert.IsTrue(match);
-        //			}
-        //		}
+            if (matches != null) {
+                bool match = false;
+                foreach (string s in matches) {
+                    if (exception.Message.Contains(s, System.StringComparison.InvariantCultureIgnoreCase)) {
+                        match = true;
+                        break;
+                    }
+                }
+                Assert.IsTrue(match);
+            }
+        }
     }
 }

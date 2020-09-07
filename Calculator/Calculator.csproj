@@ -13,4 +13,7 @@
       <HintPath>..\MegaScryptLib\lib\Antlr4.Runtime.Standard.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MegaScryptLib\MegaScryptLib.csproj" />
+  </ItemGroup>
 </Project>

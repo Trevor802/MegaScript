@@ -12,6 +12,13 @@ namespace MSLib {
             m_stack = stack;
         }
 
+        public override object VisitStatement([NotNull] CalculatorParser.StatementContext context) {
+            if (context.expression() != null) {
+                throw new Exception("null");
+            }
+            return base.VisitStatement(context);
+        }
+
         public override object VisitObject([NotNull] CalculatorParser.ObjectContext context) {
             var dict = new Dictionary<string, object>();
             KeyValuePair<string, object> fieldDecl;
@@ -51,8 +58,14 @@ namespace MSLib {
 
         public override object VisitAssignment([NotNull] CalculatorParser.AssignmentContext context) {
             var varName = "";
-            object oldValue = GetValue(context.Id()[0]);
+            object oldValue = null;
             object newValue = null;
+            try {
+                oldValue = GetValue(context.Id()[0]);
+            }
+            catch (KeyNotFoundException e) {
+                throw new Exception("Key is undeclared");
+            }
             Dictionary<string, object> dict = null;
             // Assign value to variable in object
             if (context.Id().Length > 1) {
@@ -191,7 +204,12 @@ namespace MSLib {
             if (context.children.Count == 1) {
                 // If it is an Id, then return the value
                 if (context.Id() != null) {
-                    result = GetValue(context.Id());
+                    try {
+                        result = GetValue(context.Id());
+                    }
+                    catch (KeyNotFoundException e) {
+                        throw new Exception($"{context.Id().Accept(this) as string} is undeclared");
+                    }
                     return result;
                 }
                 // Else let VisitTerminal handle it
