@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Antlr4.Runtime;
 namespace MegaScrypt
 {
@@ -18,8 +19,15 @@ namespace MegaScrypt
             CalculatorLexer lexer = new CalculatorLexer(stream);
             CommonTokenStream tokenStream = new CommonTokenStream(lexer);
             CalculatorParser parser = new CalculatorParser(tokenStream);
-
             var root = parser.program();
+            if (root.IsEmpty && root.exception != null) {
+                if (root.exception is RecognitionException) {
+                    throw new Exception("null");
+                }
+                else {
+                    throw new InvalidOperationException();
+                }
+            }
             object result = root.Accept(m_processor);
             return result;
         }
@@ -38,6 +46,27 @@ namespace MegaScrypt
 
         public string DumpStack() {
             return m_stack.ToString();
+        }
+
+        public static object BAR(IEnumerable<object> parameters) {
+            foreach (var item in parameters) {
+                Console.WriteLine(item);
+            }
+            return parameters;
+        }
+
+        public object Bar(IEnumerable<object> parameters) {
+            Console.WriteLine(this.GetHashCode());
+            return null;
+        }
+
+        public void Declare(NativeFunction func) {
+            m_stack.Declare(func.Name, func);
+        }
+
+        public void Declare(NativeFunction.Callback callback, IEnumerable<string> paramNameList = null) {
+            NativeFunction func = new NativeFunction(callback, paramNameList);
+            m_stack.Declare(func.Name, func);
         }
     }
 }

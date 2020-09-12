@@ -56,6 +56,18 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitDeclaration([NotNull] CalculatorParser.DeclarationContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.funcDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFuncDeclaration([NotNull] CalculatorParser.FuncDeclarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.varList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVarList([NotNull] CalculatorParser.VarListContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.fieldDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -91,6 +103,12 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIfStmt([NotNull] CalculatorParser.IfStmtContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.retStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRetStmt([NotNull] CalculatorParser.RetStmtContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.incrementExpr"/>.
 	/// </summary>

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using MegaScrypt;
 class Program {
     static void Main(string[] args) {
         string line;
         Machine machine = new Machine();
+        machine.Declare(Machine.BAR, new string[] { "1", "2"});
+        machine.Declare(machine.Bar, new string[] { "1", "2"});
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         while (true) {
             line = Console.ReadLine();

@@ -1,10 +1,16 @@
+// antlr4 -Dlanguage=CSharp Calculator.g4 -no-listener -visitor -o Generated
+// antlr4 Calculator.g4 
+// javac Calculator*.java
+// grun Calculator program -gui
 grammar Calculator;
 
 /* Parser Rules */
 program:            (statement | block)*;
 block:				'{' statement* '}' | statement;
-statement:          declaration | assignment | ifStmt | incrementExpr';' | decrementExpr';' | expression;
+statement:          declaration | assignment | ifStmt | incrementExpr';' | decrementExpr';' | invocation';' | retStmt';';
 declaration:        'var' Id ('=' expression)?';';
+funcDeclaration:	'function''('varList')''{'statement*'}';
+varList:			'var' Id (',''var' Id)*;
 fieldDeclaration:	Id ':' (expression | object);
 object:				'{' (fieldDeclaration ',')* fieldDeclaration'}';
 assignment:         (Id('.'Id)*) ('='|'+='|'-='|'*='|'/=') expression';';
@@ -13,10 +19,12 @@ paramList:			expression (','expression)*;
 ifStmt:				'if' '(' expression ')' block 
 					('else if' '(' expression ')' block)*
 					('else' block)?;
+retStmt:			'return' expression?;
 incrementExpr:		'++'Id | Id'++';
 decrementExpr:		'--'Id | Id'--';
 expression:         Number | 'false' | 'true' | Id | String | Null |
 					object |
+					funcDeclaration|
 					incrementExpr|
 					decrementExpr|
 					invocation|

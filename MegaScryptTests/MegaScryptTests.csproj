@@ -16,7 +16,4 @@
     <ProjectReference Include="..\MegaScryptLib\MegaScryptLib.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="PA2Tests.cs" />
-  </ItemGroup>
 </Project>

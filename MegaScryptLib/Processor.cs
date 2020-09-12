@@ -7,16 +7,81 @@ using System.Collections.Generic;
 namespace MegaScrypt {
     internal class Processor : CalculatorBaseVisitor<object>{
         private Stack m_stack;
+        private object m_lastRetValue = null;
+        private bool m_returned = false;
 
         public Processor(Stack stack) {
             m_stack = stack;
         }
 
         public override object VisitStatement([NotNull] CalculatorParser.StatementContext context) {
-            if (context.expression() != null) {
-                throw new Exception("null");
+            if (m_returned) {
+                return m_lastRetValue;
             }
             return base.VisitStatement(context);
+        }
+
+        public override object VisitVarList([NotNull] CalculatorParser.VarListContext context) {
+            var result = new List<string>();
+            var exprs = context.Id();
+            foreach (var expr in exprs) {
+                result.Add(expr.Accept(this) as string);
+            }
+            return result;
+        }
+
+        public override object VisitRetStmt([NotNull] CalculatorParser.RetStmtContext context) {
+            m_lastRetValue = context.expression() is null ? null : context.expression().Accept(this);
+            m_returned = true;
+            return m_lastRetValue;
+        }
+
+        public override object VisitFuncDeclaration([NotNull] CalculatorParser.FuncDeclarationContext context) {
+            var func = new ScriptFunction(this, Invoke, context);
+            return func;
+        }
+
+        private object Invoke(ScriptFunction func, List<object> parameters) {
+            var oldSt = m_stack;
+            m_stack = new Stack(oldSt);
+            if (parameters != null) {
+                if (func.ParamNameList.Count != parameters.Count) {
+                    throw new InvalidOperationException("number");
+                }
+                for(int i = 0; i < parameters.Count; i++) {
+                    m_stack.Declare(func.ParamNameList[i], parameters[i]);
+                }
+            }
+            m_lastRetValue = null;
+            m_returned = false;
+            base.VisitFuncDeclaration(func.Context);
+            m_stack = oldSt;
+            var ret = m_lastRetValue;
+            m_lastRetValue = false;
+            return ret;
+        }
+
+        public override object VisitInvocation([NotNull] CalculatorParser.InvocationContext context) {
+            var obj = GetValue(context.Id());
+            var func = obj as IFunction;
+            if (func is null) {
+                throw new InvalidOperationException();
+            }
+            var paramList = context.paramList().Accept(this) as List<object>;
+            if (paramList is null) {
+                paramList = new List<object>();
+            }
+            var ret = func.Invoke(paramList);
+            return ret;
+        }
+
+        public override object VisitParamList([NotNull] CalculatorParser.ParamListContext context) {
+            var result = new List<object>();
+            var exprs = context.expression();
+            foreach (var expr in exprs) {
+                result.Add(expr.Accept(this));
+            }
+            return result;
         }
 
         public override object VisitObject([NotNull] CalculatorParser.ObjectContext context) {
