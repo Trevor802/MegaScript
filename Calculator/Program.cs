@@ -1,5 +1,5 @@
 ﻿using System;
-using MSLib;
+using MegaScrypt;
 class Program {
     static void Main(string[] args) {
         string line;

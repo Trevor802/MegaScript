@@ -1,6 +1,6 @@
 ﻿using System;
 using Antlr4.Runtime;
-namespace MSLib
+namespace MegaScrypt
 {
     public class Machine
     {

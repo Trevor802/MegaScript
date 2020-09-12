@@ -4,7 +4,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using System.Collections.Generic;
 
-namespace MSLib {
+namespace MegaScrypt {
     internal class Processor : CalculatorBaseVisitor<object>{
         private Stack m_stack;
 

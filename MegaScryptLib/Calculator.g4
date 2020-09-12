@@ -8,6 +8,8 @@ declaration:        'var' Id ('=' expression)?';';
 fieldDeclaration:	Id ':' (expression | object);
 object:				'{' (fieldDeclaration ',')* fieldDeclaration'}';
 assignment:         (Id('.'Id)*) ('='|'+='|'-='|'*='|'/=') expression';';
+invocation:			Id '(' paramList? ')';
+paramList:			expression (','expression)*;
 ifStmt:				'if' '(' expression ')' block 
 					('else if' '(' expression ')' block)*
 					('else' block)?;
@@ -17,6 +19,7 @@ expression:         Number | 'false' | 'true' | Id | String | Null |
 					object |
 					incrementExpr|
 					decrementExpr|
+					invocation|
 					'('expression')'|
 					expression '.' expression|
 					('+'|'-'|'!')expression|

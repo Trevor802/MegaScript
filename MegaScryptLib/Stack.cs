@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MSLib
+namespace MegaScrypt
 {
     internal class Stack
     {
