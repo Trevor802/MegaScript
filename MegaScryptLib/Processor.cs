@@ -41,9 +41,9 @@ namespace MegaScrypt {
             return func;
         }
 
-        private object Invoke(ScriptFunction func, List<object> parameters) {
+        private object Invoke(ScriptFunction func, List<object> parameters, Stack parentStack = null) {
             var oldSt = m_stack;
-            m_stack = new Stack(oldSt);
+            m_stack = new Stack(parentStack is null ? oldSt : parentStack);
             if (parameters != null) {
                 if (func.ParamNameList.Count != parameters.Count) {
                     throw new InvalidOperationException("number");
@@ -62,8 +62,31 @@ namespace MegaScrypt {
         }
 
         public override object VisitInvocation([NotNull] CalculatorParser.InvocationContext context) {
-            var obj = GetValue(context.Id());
-            var func = obj as IFunction;
+            Stack iStack = m_stack;
+            var varName = "";
+            object oldObj = null;
+            try {
+                oldObj = GetValue(context.Id()[0]);
+            }
+            catch (KeyNotFoundException e) {
+                throw new Exception("Key is undeclared");
+            }
+            // Assign value to variable in object
+            if (context.Id().Length > 1) {
+                iStack = (Stack)oldObj;
+                for (int i = 1; i < context.Id().Length - 1; i++) {
+                    string k = context.Id()[i].Accept(this) as string;
+                    iStack = (Stack)iStack.Get(k, out _);
+                }
+                // TODO: out stack
+                varName = context.Id()[context.Id().Length - 1].Accept(this) as string;
+                oldObj = iStack.Get(varName, out _);
+            }
+            // Assign value to current stack
+            else {
+                oldObj = iStack.Get(context.Id()[0].GetText(), out _);
+            }
+            var func = oldObj as IFunction;
             if (func is null) {
                 throw new InvalidOperationException();
             }
@@ -71,7 +94,7 @@ namespace MegaScrypt {
             if (paramList is null) {
                 paramList = new List<object>();
             }
-            var ret = func.Invoke(paramList);
+            var ret = func.Invoke(paramList, iStack);
             return ret;
         }
 
@@ -85,13 +108,13 @@ namespace MegaScrypt {
         }
 
         public override object VisitObject([NotNull] CalculatorParser.ObjectContext context) {
-            var dict = new Dictionary<string, object>();
+            var stack = new Stack(m_stack);
             KeyValuePair<string, object> fieldDecl;
             foreach (var item in context.fieldDeclaration()) {
                 fieldDecl = (KeyValuePair<string, object>)item.Accept(this);
-                dict.Add(fieldDecl.Key, fieldDecl.Value);
+                stack.Declare(fieldDecl.Key, fieldDecl.Value);
             }
-            return dict;
+            return stack;
         }
 
         public override object VisitFieldDeclaration([NotNull] CalculatorParser.FieldDeclarationContext context) {
@@ -131,16 +154,16 @@ namespace MegaScrypt {
             catch (KeyNotFoundException e) {
                 throw new Exception("Key is undeclared");
             }
-            Dictionary<string, object> dict = null;
+            Stack stack = null;
             // Assign value to variable in object
             if (context.Id().Length > 1) {
-                dict = (Dictionary<string, object>)oldValue;
+                stack = (Stack)oldValue;
                 for (int i = 1; i < context.Id().Length - 1; i++) {
                     string k = context.Id()[i].Accept(this) as string;
-                    dict = (Dictionary<string, object>)dict[k];
+                    stack = (Stack)stack.Get(k, out _);
                 }
                 varName = context.Id()[context.Id().Length - 1].Accept(this) as string;
-                oldValue = dict[varName];
+                oldValue = stack.Get(varName, out _);
             }
             // Assign value to current stack
             else {
@@ -167,7 +190,7 @@ namespace MegaScrypt {
                     break;
             }
             if (context.Id().Length > 1) {
-                dict[varName] = newValue;
+                stack.Set(varName, newValue);
             }
             else {
                 m_stack.Set(varName, newValue);
@@ -228,8 +251,12 @@ namespace MegaScrypt {
             return base.VisitTerminal(node);
         }
 
+        protected object GetValue(ITerminalNode node, out Stack stack) {
+            return m_stack.Get(node.GetText(), out stack);
+        }
+
         protected object GetValue(ITerminalNode node) {
-            return m_stack.Get(node.GetText());
+            return m_stack.Get(node.GetText(), out _);
         }
 
         public override object VisitIncrementExpr([NotNull] CalculatorParser.IncrementExprContext context) {
@@ -338,12 +365,12 @@ namespace MegaScrypt {
         }
 
         private object ObjectOperation(object o, object k, int op) {
-            var dict = (Dictionary<string, object>)o;
-            return dict[Convert.ToString(k)];
+            var stack = (Stack)o;
+            return stack.Get(Convert.ToString(k), out _);
         }
 
         private object BinaryOperation(object l, object r, int op) {
-            if (l is Dictionary<string, object> && r is string) {
+            if (l is Stack && r is string) {
                 return ObjectOperation(l, r, op);
             }
             if (l is bool && r is bool) {

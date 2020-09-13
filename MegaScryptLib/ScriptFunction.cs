@@ -9,7 +9,7 @@ namespace MegaScrypt {
         private CalculatorParser.FuncDeclarationContext m_ctx;
         public CalculatorParser.FuncDeclarationContext Context => m_ctx;
 
-        public delegate object Invocation(ScriptFunction func, List<object> parameters);
+        internal delegate object Invocation(ScriptFunction func, List<object> parameters, Stack stack = null);
         private Invocation m_invocation;
 
         internal ScriptFunction(Processor processor, Invocation invocation, CalculatorParser.FuncDeclarationContext ctx) {
@@ -32,8 +32,8 @@ namespace MegaScrypt {
             return null;
         }
 
-        public object Invoke(List<object> parameters) {
-            return m_invocation.Invoke(this, parameters);
+        object IFunction.Invoke(List<object> parameters, Stack stack) {
+            return m_invocation.Invoke(this, parameters, stack);
         }
     }
 }

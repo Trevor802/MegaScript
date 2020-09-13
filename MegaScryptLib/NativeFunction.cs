@@ -18,7 +18,7 @@ namespace MegaScrypt {
             m_name = callback.Method.Name;
         }
 
-        public object Invoke(List<object> paramList) {
+        object IFunction.Invoke(List<object> paramList, Stack stack) {
             var ret = m_callback(paramList);
             return ret;
         }

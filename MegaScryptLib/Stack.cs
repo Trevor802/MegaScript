@@ -16,6 +16,10 @@ namespace MegaScrypt
 
         public void Declare(string varName, object value = null)
         {
+            if (varName == "prototype") {
+                parent = value as Stack;
+                return;
+            }
             try {
                 m_dict.Add(varName, value);
             }
@@ -24,10 +28,14 @@ namespace MegaScrypt
             }
         }
 
-        public object Get(string varName, bool allowParentChaining = true)
+        public object Get(string varName, out Stack stack, bool allowParentChaining = true)
         {
+            if (varName == "prototype") {
+                stack = parent;
+                return parent;
+            }
+            stack = this;
             if (allowParentChaining) {
-                var stack = this;
                 while(!(stack is null) && !stack.m_dict.ContainsKey(varName)) {
                     stack = stack.parent;
                 }
@@ -41,6 +49,10 @@ namespace MegaScrypt
 
         public void Set(string varName, object value, bool allowParentChaining = true)
         {
+            if (varName == "prototype") {
+                parent = value as Stack;
+                return;
+            }
             if (allowParentChaining) {
                 var stack = this;
                 while (!(stack is null) && !stack.m_dict.ContainsKey(varName)) {
@@ -61,6 +73,9 @@ namespace MegaScrypt
 
         public bool Has(string varName, bool allowParentChaining = true)
         {
+            if (varName == "prototype") {
+                return parent != null;
+            }
             if (allowParentChaining) {
                 var stack = this;
                 while (!(stack is null) && !stack.m_dict.ContainsKey(varName)) {

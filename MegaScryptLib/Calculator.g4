@@ -7,14 +7,14 @@ grammar Calculator;
 /* Parser Rules */
 program:            (statement | block)*;
 block:				'{' statement* '}' | statement;
-statement:          declaration | assignment | ifStmt | incrementExpr';' | decrementExpr';' | invocation';' | retStmt';';
+statement:          declaration | assignment | ifStmt | incrementExpr';' | decrementExpr';' | invocation | retStmt';';
 declaration:        'var' Id ('=' expression)?';';
-funcDeclaration:	'function''('varList')''{'statement*'}';
+funcDeclaration:	'function''('varList?')''{'statement*'}';
 varList:			'var' Id (',''var' Id)*;
 fieldDeclaration:	Id ':' (expression | object);
 object:				'{' (fieldDeclaration ',')* fieldDeclaration'}';
 assignment:         (Id('.'Id)*) ('='|'+='|'-='|'*='|'/=') expression';';
-invocation:			Id '(' paramList? ')';
+invocation:			(Id('.'Id)*) '(' paramList? ')'';';
 paramList:			expression (','expression)*;
 ifStmt:				'if' '(' expression ')' block 
 					('else if' '(' expression ')' block)*
@@ -23,8 +23,8 @@ retStmt:			'return' expression?;
 incrementExpr:		'++'Id | Id'++';
 decrementExpr:		'--'Id | Id'--';
 expression:         Number | 'false' | 'true' | Id | String | Null |
-					object |
 					funcDeclaration|
+					object |
 					incrementExpr|
 					decrementExpr|
 					invocation|
