@@ -150,44 +150,31 @@ namespace MegaScrypt {
             base.VisitFuncDeclaration(func.Context);
             m_stack = oldSt;
             var ret = m_lastRetValue;
-            m_lastRetValue = false;
+            m_lastRetValue = null;
+            m_returned = false;
             return ret;
         }
 
         public override object VisitInvocation([NotNull] CalculatorParser.InvocationContext context) {
-            Stack iStack = m_stack;
-            var varName = "";
-            object oldObj = null;
-            try {
-                oldObj = GetValue(context.Id()[0]);
-            }
-            catch (KeyNotFoundException e) {
-                throw new Exception("Key is undeclared");
-            }
-            // Assign value to variable in object
-            if (context.Id().Length > 1) {
-                iStack = (Stack)oldObj;
-                for (int i = 1; i < context.Id().Length - 1; i++) {
-                    string k = context.Id()[i].Accept(this) as string;
-                    iStack = (Stack)iStack.Get(k, out _);
-                }
-                // TODO: out stack
-                varName = context.Id()[context.Id().Length - 1].Accept(this) as string;
-                oldObj = iStack.Get(varName, out _);
-            }
-            // Assign value to current stack
-            else {
-                oldObj = iStack.Get(context.Id()[0].GetText(), out _);
-            }
-            var func = oldObj as IFunction;
+            object oldValue = context.expression().Accept(this);
+            var varName = m_iterName;
+            var stack = m_iterStack;
+            var func = oldValue as IFunction;
+            var paramList = context.paramList() is null ? null : context.paramList().Accept(this) as List<object>;
+            var ret = FuncOperation(func, paramList, stack);
+            m_iterStack = null;
+            m_iterName = "";
+            return ret;
+        }
+
+        private object FuncOperation(IFunction func, List<object> paramList, Stack stack) {
             if (func is null) {
                 throw new InvalidOperationException();
             }
-            var paramList = context.paramList().Accept(this) as List<object>;
             if (paramList is null) {
                 paramList = new List<object>();
             }
-            var ret = func.Invoke(paramList, iStack);
+            var ret = func.Invoke(paramList, stack);
             return ret;
         }
 
@@ -393,6 +380,14 @@ namespace MegaScrypt {
                 //    return result;
                 //}
                 // ++x, --x
+                if (context.children[1] is ITerminalNode node && node.Symbol.Type == CalculatorParser.LeftParenthesis) {
+                    var func = context.expression()[0].Accept(this);
+                    var paramList = context.paramList() is null ? null : context.paramList().Accept(this) as List<object>;
+                    result = FuncOperation(func as IFunction, paramList as List<object>, m_iterStack);
+                    m_iterStack = null;
+                    m_iterName = "";
+                    return result;
+                }
                 var op = context.children[0] as ITerminalNode;
                 result = UnaryOperation(exprs[0], op);
                 return result;
@@ -455,16 +450,16 @@ namespace MegaScrypt {
             if (l is Stack stack && r is string) {
                 return ObjectOperation(stack, r, op);
             }
-            if (l is bool && r is bool) {
+            if (l is null || r is null || r is bool && r is bool) {
                 return BooleanLogicalOperation(l, r, op);
-            }
-            if (l is string && r is string) {
-                return StringBinaryOperation(l, r, op);
             }
             if (l is int && r is int) {
                 return IntegerBinaryOperation(l, r, op);
             }
-            return FloatBinaryOperation(l, r, op);
+            if (l is float || r is float) {
+                return FloatBinaryOperation(l, r, op);
+            }
+            return StringBinaryOperation(l, r, op);
         }
 
         private bool BooleanLogicalOperation(object lhs, object rhs, int op) {

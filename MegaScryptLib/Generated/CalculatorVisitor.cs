@@ -104,12 +104,6 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitForAssign([NotNull] CalculatorParser.ForAssignContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CalculatorParser.invocation"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitInvocation([NotNull] CalculatorParser.InvocationContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.paramList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -181,4 +175,10 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitExpression([NotNull] CalculatorParser.ExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.invocation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInvocation([NotNull] CalculatorParser.InvocationContext context);
 }

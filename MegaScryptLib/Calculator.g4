@@ -17,7 +17,6 @@ array:				'['paramList?']';
 object:				'{' (fieldDeclaration ',')* fieldDeclaration'}';
 assignment:         expression ('='|'+='|'-='|'*='|'/=') expression';';
 forAssign:			assignment | incrementExpr | decrementExpr;
-invocation:			(Id('.'Id)*) '(' paramList? ')';
 paramList:			expression (','expression)*;
 ifStmt:				'if' '(' expression ')' block 
 					('else if' '(' expression ')' block)*
@@ -37,9 +36,9 @@ expression:         Number | 'false' | 'true' | Id | String | Null |
 					array |
 					incrementExpr|
 					decrementExpr|
-					invocation|
 					'('expression')'|
 					expression '.' expression|
+					expression '(' paramList? ')'|
 					expression '[' expression ']'|
 					('+'|'-'|'!')expression|
 					expression ('*' | '/' | '%') expression |
@@ -48,6 +47,7 @@ expression:         Number | 'false' | 'true' | Id | String | Null |
 					expression ('=='|'!=') expression|
 					expression '&&' expression|
 					expression '||' expression;
+invocation:			expression '(' paramList? ')';
 					
 
 /* Lexer Rules */

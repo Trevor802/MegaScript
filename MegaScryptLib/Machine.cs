@@ -52,6 +52,11 @@ namespace MegaScrypt
             m_stack.Declare(func.Name, func);
         }
 
+        //public void Declare(NativeFunction.Callback callback, IEnumerable<string> paramNameList = null) {
+        //    NativeFunction func = new NativeFunction(callback, paramNameList);
+        //    Declare(func.Name, func);
+        //}
+
         public void Declare(string id, object value) {
             m_stack.Declare(id, value);
         }

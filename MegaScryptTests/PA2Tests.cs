@@ -376,67 +376,67 @@ var a = [
 
         #endregion
 
-        //        [Test]
-        //        public void TestBigComplexScript() {
-        //            string script = @"
-        //var unit = {
-        //	name: null,
-        //	hp: 20,
-        //	shield: 0,
-        //	attack: 7,
-        //	Damage: function(var amount) {
-        //		if(shield > 0) {
-        //			shield -= amount;
-        //			Print(name + ""'s shield blocked "" + amount + "" damage"");
-        //			return;
-        //		}
-        //		hp -= amount;
-        //		Print(name + "" took "" + amount + "" damage: "" + hp);
-        //	},
-        //	IsAlive: function() { return hp > 0; }
-        //};
-        //var u1 = {
-        //	prototype: unit,
-        //	name: ""Unit 1"",
-        //	hp: 25,
-        //	shield: 20
-        //};
-        //var u2 = {
-        //	prototype: unit,
-        //	name: ""Unit 2"",
-        //	attack: 15
-        //};
+        [Test]
+        public void TestBigComplexScript() {
+            string script = @"
+        var unit = {
+        	name: null,
+        	hp: 20,
+        	shield: 0,
+        	attack: 7,
+        	Damage: function(var amount) {
+        		if(shield > 0) {
+        			shield -= amount;
+        			Print(name + ""'s shield blocked "" + amount + "" damage"");
+        			return;
+        		}
+        		hp -= amount;
+        		Print(name + "" took "" + amount + "" damage: "" + hp);
+        	},
+        	IsAlive: function() { return hp > 0; }
+        };
+        var u1 = {
+        	prototype: unit,
+        	name: ""Unit 1"",
+        	hp: 25,
+        	shield: 20
+        };
+        var u2 = {
+        	prototype: unit,
+        	name: ""Unit 2"",
+        	attack: 15
+        };
 
-        //var rounds = 0;
-        //while(u1.IsAlive() && u2.IsAlive())
-        //{
-        //	rounds++;
-        //	u2.Damage(u1.attack);
-        //	u1.Damage(u2.attack);
-        //}
+        var rounds = 0;
+        while(u1.IsAlive() && u2.IsAlive())
+        {
+        	rounds++;
+        	u2.Damage(u1.attack);
+        	u1.Damage(u2.attack);
+        }
 
-        //var winner;
-        //if(u1.IsAlive() && !u2.IsAlive())
-        //	winner = u1.name;
-        //else if(!u1.IsAlive() && u2.IsAlive())
-        //	winner = u2.name;
-        //else
-        //	winner = ""Tie"";
-        //";
-        //            machine.Declare(new NativeFunction("Print", (List<object> parameters) => {
-        //                Console.WriteLine(parameters[0].ToString());
-        //                return null;
-        //            }));
-        //            machine.Execute(script);
-        //            object winner = machine.Evaluate("winner");
-        //            object u1_hp = machine.Evaluate("u1.hp");
-        //            object u2_hp = machine.Evaluate("u2.hp");
-        //            object rounds = machine.Evaluate("rounds");
+        var winner;
+        if(u1.IsAlive() && !u2.IsAlive())
+        	winner = u1.name;
+        else if(!u1.IsAlive() && u2.IsAlive())
+        	winner = u2.name;
+        else
+        	winner = ""Tie"";
+        ";
+            machine.Declare(new NativeFunction("Print", (List<object> parameters) => {
+                Console.WriteLine(parameters[0].ToString());
+                return null;
+            }));
+            machine.Execute(script);
+            object winner = machine.Evaluate("winner");
+            object u1_hp = machine.Evaluate("u1.hp");
+            object u2_hp = machine.Evaluate("u2.hp");
+            object rounds = machine.Evaluate("rounds");
 
-        //            Assert.AreEqual("Unit 1", winner);
-        //            Assert.AreEqual(10, u1_hp);
-        //            Assert.AreEqual(-1, u2_hp);
-        //            Assert.AreEqual(3, rounds);
-        //        }
+            Assert.AreEqual("Unit 1", winner);
+            Assert.AreEqual(10, u1_hp);
+            Assert.AreEqual(-1, u2_hp);
+            Assert.AreEqual(3, rounds);
+        }
     }
 }

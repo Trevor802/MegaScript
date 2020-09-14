@@ -36,6 +36,7 @@ namespace MegaScrypt
             NativeFunction func = new NativeFunction(callback, paramNameList);
             Declare(func.Name, func);
         }
+
         internal delegate object Getter();
         internal delegate void Setter(object value);
         private Dictionary<string, Setter> m_setters = new Dictionary<string, Setter>();
