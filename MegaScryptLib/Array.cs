@@ -16,9 +16,10 @@ namespace MegaScrypt {
             m_list = enumerable.ToList();
             BindFunctions();
         }
-
+        // TODO: Implement with the inherited interface: Stask.Get/Stack.Set
         public object this[int i] {
             get => m_list[i];
+            set => m_list[i] = value;
         }
 
         private void BindFunctions() {

@@ -3,15 +3,20 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace MegaScrypt {
     internal class Processor : CalculatorBaseVisitor<object>{
         private Stack m_stack;
+        private Stack m_iterStack;
+        private string m_iterName;
         private object m_lastRetValue = null;
         private bool m_returned = false;
 
         public Processor(Stack stack) {
             m_stack = stack;
+            m_iterStack = m_stack;
+            m_iterName = "";
         }
 
         public override object VisitArray([NotNull] CalculatorParser.ArrayContext context) {
@@ -149,35 +154,10 @@ namespace MegaScrypt {
         }
 
         public override object VisitAssignment([NotNull] CalculatorParser.AssignmentContext context) {
-            var varName = "";
-            object oldValue = null;
-            object newValue = null;
-            try {
-                oldValue = GetValue(context.Id()[0]);
-            }
-            catch (KeyNotFoundException e) {
-                throw new Exception("Key is undeclared");
-            }
-            Stack stack = null;
-            // Assign value to variable in object
-            if (context.Id().Length > 1) {
-                stack = (Stack)oldValue;
-                for (int i = 1; i < context.Id().Length - 1; i++) {
-                    string k = context.Id()[i].Accept(this) as string;
-                    stack = (Stack)stack.Get(k, out _);
-                }
-                varName = context.Id()[context.Id().Length - 1].Accept(this) as string;
-                oldValue = stack.Get(varName, out _);
-            }
-            // Assign value to current stack
-            else {
-                varName = context.Id()[0].Accept(this) as string;
-                oldValue = GetValue(context.Id()[0]);
-            }
-            // =/+=/-=/*=//=/
-            if (context.expression() != null) {
-                newValue = context.expression().Accept(this);
-            }
+            object oldValue = context.expression()[0].Accept(this);
+            var varName = m_iterName;
+            var stack = m_iterStack;
+            object newValue = context.expression()[1].Accept(this);
             var op = context.children[1] as ITerminalNode;
             switch (op.Symbol.Type) {
                 case CalculatorParser.AddAss:
@@ -193,12 +173,14 @@ namespace MegaScrypt {
                     newValue = BinaryOperation(oldValue, newValue, CalculatorParser.Divide);
                     break;
             }
-            if (context.Id().Length > 1) {
-                stack.Set(varName, newValue);
+            if (stack is Array array) {
+                array[Convert.ToInt32(varName)] = newValue;
             }
             else {
-                m_stack.Set(varName, newValue);
+                stack.Set(varName, newValue);
             }
+            m_iterStack = m_stack;
+            m_iterName = "";
             return newValue;
         }
 
@@ -252,21 +234,20 @@ namespace MegaScrypt {
                     return s;
                 case CalculatorParser.Null:
                     return null;
-                case CalculatorParser.Indexer:
-                    s = node.GetText();
-                    s = s.Substring(1, s.Length - 2);
-                    i = Convert.ToInt32(s);
-                    return i;
             }
             return base.VisitTerminal(node);
         }
 
         protected object GetValue(ITerminalNode node, out Stack stack) {
-            return m_stack.Get(node.GetText(), out stack);
+            var result = m_stack.Get(node.GetText(), out stack);
+            m_iterStack = stack;
+            m_iterName = node.GetText();
+            return result;
         }
 
         protected object GetValue(ITerminalNode node) {
-            return m_stack.Get(node.GetText(), out _);
+            m_iterName = node.GetText();
+            return m_stack.Get(node.GetText(), out m_iterStack);// TODO: Formatting the code
         }
 
         public override object VisitIncrementExpr([NotNull] CalculatorParser.IncrementExprContext context) {
@@ -320,20 +301,12 @@ namespace MegaScrypt {
             }
             var exprs = context.expression();
             if (exprs.Length == 1) {
-                if (context.Id() != null) {
-                    var d = exprs[0].Accept(this);
-                    var s = context.Id().Accept(this);
-                    result = ObjectOperation(d, s, CalculatorParser.Dot);
-                    return result;
-                }
-                if (context.Indexer()?.Length > 0) {
-                    object obj = exprs[0].Accept(this);
-                    foreach (var item in context.Indexer()) {
-                        int indice = (int)item.Accept(this);
-                        obj = (obj as Array)[indice];
-                    }
-                    return obj;
-                }
+                //if (context.Id() != null) {
+                //    var d = exprs[0].Accept(this);
+                //    var s = context.Id().Accept(this);
+                //    result = ObjectOperation(d, s, CalculatorParser.Dot);
+                //    return result;
+                //}
                 // ++x, --x
                 var op = context.children[0] as ITerminalNode;
                 result = UnaryOperation(exprs[0], op);
@@ -346,7 +319,13 @@ namespace MegaScrypt {
                 if (op.Symbol.Type == CalculatorParser.Dot) {
                     l = exprs[0].Accept(this);
                     r = exprs[1].Id().Accept(this);
-                    result = ObjectOperation(l, r, CalculatorParser.Dot);
+                    result = ObjectOperation(l as Stack, r, op.Symbol.Type);
+                    return result;
+                }
+                if (op.Symbol.Type == CalculatorParser.LeftBracket) {
+                    l = exprs[0].Accept(this);
+                    r = exprs[1].Accept(this);
+                    result = ObjectOperation(l as Stack, r, op.Symbol.Type);
                     return result;
                 }
                 l = exprs[0].Accept(this);
@@ -372,14 +351,24 @@ namespace MegaScrypt {
             return n;
         }
 
-        private object ObjectOperation(object o, object k, int op) {
-            var stack = (Stack)o;
-            return stack.Get(Convert.ToString(k), out _);
+        private object ObjectOperation(Stack stack, object k, int op) {
+            m_iterStack = stack;
+            m_iterName = Convert.ToString(k);
+            switch (op) {
+                case CalculatorParser.Dot:
+                    return stack.Get(m_iterName, out _);
+                case CalculatorParser.LeftBracket:
+                    if (stack is Array array) {
+                        return array[Convert.ToInt32(k)];
+                    }
+                    break;
+            }
+            throw new InvalidOperationException();
         }
 
         private object BinaryOperation(object l, object r, int op) {
-            if (l is Stack && r is string) {
-                return ObjectOperation(l, r, op);
+            if (l is Stack stack && r is string) {
+                return ObjectOperation(stack, r, op);
             }
             if (l is bool && r is bool) {
                 return BooleanLogicalOperation(l, r, op);

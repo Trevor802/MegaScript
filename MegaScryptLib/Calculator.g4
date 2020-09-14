@@ -11,10 +11,10 @@ statement:          declaration | assignment | ifStmt | incrementExpr';' | decre
 declaration:        'var' Id ('=' expression)?';';
 funcDeclaration:	'function''('varList?')''{'statement*'}';
 varList:			'var' Id (',''var' Id)*;
-fieldDeclaration:	Id ':' (expression | object);
+fieldDeclaration:	Id ':' expression;
 array:				'['paramList?']';
 object:				'{' (fieldDeclaration ',')* fieldDeclaration'}';
-assignment:         (Id('.'Id)*) ('='|'+='|'-='|'*='|'/=') expression';';
+assignment:         expression ('='|'+='|'-='|'*='|'/=') expression';';
 invocation:			(Id('.'Id)*) '(' paramList? ')';
 paramList:			expression (','expression)*;
 ifStmt:				'if' '(' expression ')' block 
@@ -30,9 +30,9 @@ expression:         Number | 'false' | 'true' | Id | String | Null |
 					incrementExpr|
 					decrementExpr|
 					invocation|
-					expression Indexer+|
 					'('expression')'|
 					expression '.' expression|
+					expression '[' expression ']'|
 					('+'|'-'|'!')expression|
 					expression ('*' | '/' | '%') expression |
 					expression ('+' | '-') expression|
@@ -64,6 +64,8 @@ Divide:             '/';
 Modulo:             '%';
 LeftParenthesis:    '(';
 RightParenthesis:   ')';
+LeftBracket:		'[';
+RightBracket:		']';
 Greater:            '>';
 Less:               '<';
 GreaterEqual:       '>=';
@@ -74,7 +76,6 @@ AddAss:				'+=';
 MinusAss:			'-=';
 MultiplyAss:		'*=';
 DivideAss:			'/=';
-Indexer:			'['Number']';
 String:				'"'.*?'"';
 Id:                 (Letter|'_')(Letter|'_'|Digit)*;
 WhiteSpaces:        [ \t\r\n]+ -> skip;

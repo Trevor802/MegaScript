@@ -127,9 +127,11 @@ namespace MegaScrypt
         public override string ToString() {
             // StringBuilder is more efficient
             var sb = new System.Text.StringBuilder();
+            sb.AppendLine("{");
             foreach (var item in m_dict) {
-                sb.AppendLine($"{item.Key} = {item.Value}");
+                sb.AppendLine($"{item.Key} : {item.Value}");
             }
+            sb.AppendLine("}");
             return sb.ToString();
         }
     }
