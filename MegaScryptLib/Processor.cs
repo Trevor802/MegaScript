@@ -14,6 +14,10 @@ namespace MegaScrypt {
             m_stack = stack;
         }
 
+        public override object VisitArray([NotNull] CalculatorParser.ArrayContext context) {
+            return new Array(context.paramList() is null ? null : context.paramList().Accept(this) as List<object>);
+        }
+
         public override object VisitStatement([NotNull] CalculatorParser.StatementContext context) {
             if (m_returned) {
                 return m_lastRetValue;
@@ -223,6 +227,7 @@ namespace MegaScrypt {
 
         public override object VisitTerminal(ITerminalNode node) {
             string s = "";
+            int i = 0;
             switch (node.Symbol.Type) {
                 case CalculatorParser.Number: {
                         s = node.GetText();
@@ -231,7 +236,7 @@ namespace MegaScrypt {
                             return f;
                         }
                         else {
-                            int i = int.Parse(s);
+                            i = int.Parse(s);
                             return i;
                         }
                     }
@@ -247,6 +252,11 @@ namespace MegaScrypt {
                     return s;
                 case CalculatorParser.Null:
                     return null;
+                case CalculatorParser.Indexer:
+                    s = node.GetText();
+                    s = s.Substring(1, s.Length - 2);
+                    i = Convert.ToInt32(s);
+                    return i;
             }
             return base.VisitTerminal(node);
         }
@@ -316,6 +326,14 @@ namespace MegaScrypt {
                     result = ObjectOperation(d, s, CalculatorParser.Dot);
                     return result;
                 }
+                if (context.Indexer()?.Length > 0) {
+                    object obj = exprs[0].Accept(this);
+                    foreach (var item in context.Indexer()) {
+                        int indice = (int)item.Accept(this);
+                        obj = (obj as Array)[indice];
+                    }
+                    return obj;
+                }
                 // ++x, --x
                 var op = context.children[0] as ITerminalNode;
                 result = UnaryOperation(exprs[0], op);
@@ -350,16 +368,6 @@ namespace MegaScrypt {
                         return -(int)n;
                     else
                         return -(float)n;
-                //case CalculatorParser.Increment:
-                //    varName = e.Id().Accept(this) as string;
-                //    varValue = GetValue(e.Id());
-                //    m_stack.Set(varName, (int)varValue + 1);
-                //    return GetValue(e.Id());
-                //case CalculatorParser.Decrement:
-                //    varName = e.Id().Accept(this) as string;
-                //    varValue = GetValue(e.Id());
-                //    m_stack.Set(varName, (int)varValue - 1);
-                //    return GetValue(e.Id());
             }
             return n;
         }

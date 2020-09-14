@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MegaScrypt
 {
-    internal class Stack
+    public class Stack
     {
         private Stack parent = null;
         private Dictionary<string, object> m_dict;
@@ -28,11 +28,34 @@ namespace MegaScrypt
             }
         }
 
-        public object Get(string varName, out Stack stack, bool allowParentChaining = true)
-        {
+        public void Declare(NativeFunction func) {
+            Declare(func.Name, func);
+        }
+
+        public void Declare(NativeFunction.Callback callback, IEnumerable<string> paramNameList = null) {
+            NativeFunction func = new NativeFunction(callback, paramNameList);
+            Declare(func.Name, func);
+        }
+        internal delegate object Getter();
+        internal delegate void Setter(object value);
+        private Dictionary<string, Setter> m_setters = new Dictionary<string, Setter>();
+        private Dictionary<string, Getter> m_getters = new Dictionary<string, Getter>();
+        internal void Declare(string varName, Getter getter, Setter setter = null) {
+            m_getters.Add(varName, getter);
+            if (setter != null) {
+                m_setters.Add(varName, setter);
+            }
+        }
+
+        public object Get(string varName, out Stack stack, bool allowParentChaining = true) {
+            object obj = null;
             if (varName == "prototype") {
                 stack = parent;
                 return parent;
+            }
+            if (m_getters.ContainsKey(varName)) {
+                stack = this;
+                return m_getters[varName]();
             }
             stack = this;
             if (allowParentChaining) {
@@ -44,13 +67,23 @@ namespace MegaScrypt
                 }
                 return stack.m_dict[varName];
             }
-            return m_dict[varName];
+            try {
+                obj = m_dict[varName];
+            }
+            catch {
+                throw new KeyNotFoundException();
+            }
+            return obj;
         }
 
         public void Set(string varName, object value, bool allowParentChaining = true)
         {
             if (varName == "prototype") {
                 parent = value as Stack;
+                return;
+            }
+            if (m_setters.ContainsKey(varName)) {
+                m_setters[varName](value);
                 return;
             }
             if (allowParentChaining) {
@@ -62,19 +95,21 @@ namespace MegaScrypt
                     throw new KeyNotFoundException();
                 }
                 stack.m_dict[varName] = value;
+                return;
             }
-            else {
-                if (!m_dict.ContainsKey(varName)) {
-                    throw new KeyNotFoundException();
-                }
-                m_dict[varName] = value;
+            if (!m_dict.ContainsKey(varName)) {
+                throw new KeyNotFoundException();
             }
+            m_dict[varName] = value;
         }
 
         public bool Has(string varName, bool allowParentChaining = true)
         {
             if (varName == "prototype") {
                 return parent != null;
+            }
+            if (m_getters.ContainsKey(varName)) {
+                return true;
             }
             if (allowParentChaining) {
                 var stack = this;

@@ -7,14 +7,15 @@ grammar Calculator;
 /* Parser Rules */
 program:            (statement | block)*;
 block:				'{' statement* '}' | statement;
-statement:          declaration | assignment | ifStmt | incrementExpr';' | decrementExpr';' | invocation | retStmt';';
+statement:          declaration | assignment | ifStmt | incrementExpr';' | decrementExpr';' | invocation';' | retStmt';';
 declaration:        'var' Id ('=' expression)?';';
 funcDeclaration:	'function''('varList?')''{'statement*'}';
 varList:			'var' Id (',''var' Id)*;
 fieldDeclaration:	Id ':' (expression | object);
+array:				'['paramList?']';
 object:				'{' (fieldDeclaration ',')* fieldDeclaration'}';
 assignment:         (Id('.'Id)*) ('='|'+='|'-='|'*='|'/=') expression';';
-invocation:			(Id('.'Id)*) '(' paramList? ')'';';
+invocation:			(Id('.'Id)*) '(' paramList? ')';
 paramList:			expression (','expression)*;
 ifStmt:				'if' '(' expression ')' block 
 					('else if' '(' expression ')' block)*
@@ -25,9 +26,11 @@ decrementExpr:		'--'Id | Id'--';
 expression:         Number | 'false' | 'true' | Id | String | Null |
 					funcDeclaration|
 					object |
+					array |
 					incrementExpr|
 					decrementExpr|
 					invocation|
+					expression Indexer+|
 					'('expression')'|
 					expression '.' expression|
 					('+'|'-'|'!')expression|
@@ -71,6 +74,7 @@ AddAss:				'+=';
 MinusAss:			'-=';
 MultiplyAss:		'*=';
 DivideAss:			'/=';
+Indexer:			'['Number']';
 String:				'"'.*?'"';
 Id:                 (Letter|'_')(Letter|'_'|Digit)*;
 WhiteSpaces:        [ \t\r\n]+ -> skip;
