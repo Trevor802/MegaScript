@@ -13,6 +13,12 @@ namespace MegaScrypt {
         public delegate object Callback(List<object> parameters);
         private Callback m_callback;
 
+        public NativeFunction(string name, Callback callback) {
+            m_name = name;
+            m_callback = callback;
+            m_paramNameList = null;
+        }
+
         internal NativeFunction(Callback callback, IEnumerable<string> parameters) {
             m_callback = callback;
             m_paramNameList = parameters is null ? null : parameters.ToList();

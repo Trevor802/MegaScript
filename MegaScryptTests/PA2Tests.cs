@@ -272,109 +272,109 @@ var a = [
 
         #endregion
 
-        //        #region Loop Tests
+        #region Loop Tests
 
-        //        [Test]
-        //        public void TestForLoop() {
-        //            string script = @"
-        //var x = 1;
-        //for(var i = 0; i < 5; i++) {
-        //	x *= 2;
-        //}
-        //";
-        //            machine.Execute(script);
-        //            int expected = 32;
-        //            object result = machine.Evaluate("x");
-        //            Assert.AreEqual(expected, result);
-        //        }
+        [Test]
+        public void TestForLoop() {
+            string script = @"
+        var x = 1;
+        for(var i = 0; i < 5; i++) {
+        	x *= 2;
+        }
+        ";
+            machine.Execute(script);
+            int expected = 32;
+            object result = machine.Evaluate("x");
+            Assert.AreEqual(expected, result);
+        }
 
-        //        [Test]
-        //        public void TestForEachLoop() {
-        //            string script = @"
-        //var list = [1, 3, 5, 7, 9];
-        //var sum = 0;
-        //foreach(var i in list) {
-        //	sum += i;
-        //}
-        //";
-        //            machine.Execute(script);
-        //            int expected = 25;
-        //            object result = machine.Evaluate("sum");
-        //            Assert.AreEqual(expected, result);
-        //        }
+        [Test]
+        public void TestForEachLoop() {
+            string script = @"
+        var list = [1, 3, 5, 7, 9];
+        var sum = 0;
+        foreach(var i in list) {
+        	sum += i;
+        }
+        ";
+            machine.Execute(script);
+            int expected = 25;
+            object result = machine.Evaluate("sum");
+            Assert.AreEqual(expected, result);
+        }
 
-        //        [Test]
-        //        public void TestWhileLoop() {
-        //            string script = @"
-        //var x = 0;
-        //while(x < 10)
-        //{
-        //	x++;
-        //}
-        //";
-        //            machine.Execute(script);
-        //            object result = machine.Evaluate("x");
-        //            int expected = 10;
-        //            Assert.AreEqual(expected, result);
-        //        }
+        [Test]
+        public void TestWhileLoop() {
+            string script = @"
+        var x = 0;
+        while(x < 10)
+        {
+        	x++;
+        }
+        ";
+            machine.Execute(script);
+            object result = machine.Evaluate("x");
+            int expected = 10;
+            Assert.AreEqual(expected, result);
+        }
 
-        //        [Test]
-        //        public void TestDoWhileLoop() {
-        //            string script = @"
-        //var x = 0;
-        //do
-        //{
-        //	x++;
-        //} while(x < 10);
-        //";
-        //            machine.Execute(script);
-        //            object result = machine.Evaluate("x");
-        //            int expected = 10;
-        //            Assert.AreEqual(expected, result);
-        //        }
+        [Test]
+        public void TestDoWhileLoop() {
+            string script = @"
+        var x = 0;
+        do
+        {
+        	x++;
+        } while(x < 10);
+        ";
+            machine.Execute(script);
+            object result = machine.Evaluate("x");
+            int expected = 10;
+            Assert.AreEqual(expected, result);
+        }
 
-        //        [Test]
-        //        public void TestBreak() {
-        //            string script = @"
-        //var x = 0;
-        //while(true) {
-        //	x++;
-        //	if(x > 5)
-        //		break;
-        //}
-        //";
-        //            machine.Execute(script);
-        //            int expected = 6;
-        //            object result = machine.Evaluate("x");
-        //            Assert.AreEqual(expected, result);
-        //        }
+        [Test]
+        public void TestBreak() {
+            string script = @"
+        var x = 0;
+        while(true) {
+        	x++;
+        	if(x > 5)
+        		break;
+        }
+        ";
+            machine.Execute(script);
+            int expected = 6;
+            object result = machine.Evaluate("x");
+            Assert.AreEqual(expected, result);
+        }
 
-        //        [Test]
-        //        public void TestContinue() {
-        //            string script = @"
-        //for(var i = 0; i < 10; i++) {
-        //	if(i % 2 == 0)
-        //		continue;
-        //	Emit(i);
-        //}
-        //";
-        //            List<object> emitted = new List<object>();
-        //            machine.Declare(new NativeFunction("Emit", (List<object> parameters) => {
-        //                emitted.Add(parameters[0]);
-        //                return null;
-        //            }));
-        //            List<object> expected = new List<object>() { 1, 3, 5, 7, 9 };
-        //            machine.Execute(script);
-        //            Assert.AreEqual(expected, emitted);
-        //        }
+        [Test]
+        public void TestContinue() {
+            string script = @"
+        for(var i = 0; i < 10; i++) {
+        	if(i % 2 == 0)
+        		continue;
+        	Emit(i);
+        }
+        ";
+            List<object> emitted = new List<object>();
+            machine.Declare(new NativeFunction("Emit", (List<object> parameters) => {
+                emitted.Add(parameters[0]);
+                return null;
+            }));
+            List<object> expected = new List<object>() { 1, 3, 5, 7, 9 };
+            machine.Execute(script);
+            Assert.AreEqual(expected, emitted);
+        }
 
-        //        #endregion
+        #endregion
 
-        //        #region Object Tests
+        #region Object Tests
 
-        //        // TODO: test prototype
+        // TODO: test prototype
 
-        //        #endregion
+        #endregion
 
         //        [Test]
         //        public void TestBigComplexScript() {

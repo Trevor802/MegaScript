@@ -12,11 +12,92 @@ namespace MegaScrypt {
         private string m_iterName;
         private object m_lastRetValue = null;
         private bool m_returned = false;
+        private bool m_broken = false;
+        private bool m_continued = false;
 
         public Processor(Stack stack) {
             m_stack = stack;
             m_iterStack = m_stack;
             m_iterName = "";
+        }
+
+        public override object VisitForeachStmt([NotNull] CalculatorParser.ForeachStmtContext context) {
+            var enumerable = context.expression().Accept(this) as IEnumerable<object>;
+            var enumerator = enumerable.GetEnumerator();
+            context.declaration().Accept(this);
+            var varName = m_iterName;
+            while (enumerator.MoveNext()) {
+                m_stack.Set(varName, enumerator.Current);
+                context.block().Accept(this);
+            }
+            m_iterName = "";
+            return null;
+        }
+
+        public override object VisitDoWhileStmt([NotNull] CalculatorParser.DoWhileStmtContext context) {
+            do {
+                context.block().Accept(this);
+                if (m_broken) {
+                    m_broken = false;
+                    break;
+                }
+                if (m_continued) {
+                    m_continued = false;
+                    continue;
+                }
+            }
+            while ((bool)context.expression().Accept(this));
+            return null;
+        }
+
+        public override object VisitWhileStmt([NotNull] CalculatorParser.WhileStmtContext context) {
+            while ((bool)context.expression().Accept(this)) {
+                context.block().Accept(this);
+                if (m_broken) {
+                    m_broken = false;
+                    break;
+                }
+                if (m_continued) {
+                    m_continued = false;
+                    continue;
+                }
+            }
+            return null;
+        }
+
+        public override object VisitBreakStmt([NotNull] CalculatorParser.BreakStmtContext context) {
+            m_broken = true;
+            return null;
+        }
+
+        public override object VisitContinueStmt([NotNull] CalculatorParser.ContinueStmtContext context) {
+            m_continued = true;
+            return null;
+        }
+
+        public override object VisitForStmt([NotNull] CalculatorParser.ForStmtContext context) {
+            var stack = new Stack(m_stack);
+            var oldStack = m_stack;
+            m_stack = stack;
+            if (context.declaration() != null) {
+                context.declaration().Accept(this);
+            }
+            while(context.expression() is null || (bool)context.expression().Accept(this)) {
+                context.block().Accept(this);
+                if (m_broken) {
+                    m_broken = false;
+                    break;
+                }
+                if (context.forAssign() != null) {
+                    context.forAssign().Accept(this);
+                }
+                if (m_continued) {
+                    m_continued = false;
+                    continue;
+                }
+            }
+            m_stack = oldStack;
+            return null;
         }
 
         public override object VisitArray([NotNull] CalculatorParser.ArrayContext context) {
@@ -26,6 +107,9 @@ namespace MegaScrypt {
         public override object VisitStatement([NotNull] CalculatorParser.StatementContext context) {
             if (m_returned) {
                 return m_lastRetValue;
+            }
+            if (m_broken || m_continued) {
+                return null;
             }
             return base.VisitStatement(context);
         }
@@ -149,6 +233,7 @@ namespace MegaScrypt {
             if (context.expression() != null) {
                 varValue = context.expression().Accept(this);
             }
+            m_iterName = varName;
             m_stack.Declare(varName, varValue);
             return varValue;
         }

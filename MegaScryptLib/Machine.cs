@@ -48,6 +48,10 @@ namespace MegaScrypt
             return m_stack.ToString();
         }
 
+        public void Declare(NativeFunction func) {
+            m_stack.Declare(func.Name, func);
+        }
+
         public void Declare(string id, object value) {
             m_stack.Declare(id, value);
         }

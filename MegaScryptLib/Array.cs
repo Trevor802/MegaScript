@@ -21,7 +21,7 @@ namespace MegaScrypt {
             get => m_list[i];
             set => m_list[i] = value;
         }
-
+        // TODO: Implement with C# reflection [BindMethod]
         private void BindFunctions() {
             Declare(Add);
             Declare(AddRange);
@@ -61,11 +61,46 @@ namespace MegaScrypt {
         }
 
         public IEnumerator<object> GetEnumerator() {
-            throw new NotImplementedException();
+            return new ArrayEnum(m_list);
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
+        }
+    }
+
+    public class ArrayEnum : IEnumerator<object> {
+        private List<object> m_list;
+        private int m_position = -1;
+
+        public ArrayEnum(List<object> list) {
+            this.m_list = list;
+        }
+
+        object IEnumerator.Current => m_list[m_position];
+
+        public object Current {
+            get {
+                try {
+                    return m_list[m_position];
+                }
+                catch (IndexOutOfRangeException){
+                    throw new InvalidOperationException();
+                }
+            }
+        }
+
+        public void Dispose() {
             throw new NotImplementedException();
+        }
+
+        public bool MoveNext() {
+            m_position++;
+            return m_position < m_list.Count;
+        }
+
+        public void Reset() {
+            m_position = -1;
         }
     }
 }

@@ -50,6 +50,12 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStatement([NotNull] CalculatorParser.StatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.loopStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLoopStmt([NotNull] CalculatorParser.LoopStmtContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -92,6 +98,12 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitAssignment([NotNull] CalculatorParser.AssignmentContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.forAssign"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitForAssign([NotNull] CalculatorParser.ForAssignContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.invocation"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -110,11 +122,47 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitIfStmt([NotNull] CalculatorParser.IfStmtContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.forStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitForStmt([NotNull] CalculatorParser.ForStmtContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.whileStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhileStmt([NotNull] CalculatorParser.WhileStmtContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.doWhileStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDoWhileStmt([NotNull] CalculatorParser.DoWhileStmtContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.foreachStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitForeachStmt([NotNull] CalculatorParser.ForeachStmtContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.retStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitRetStmt([NotNull] CalculatorParser.RetStmtContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.breakStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBreakStmt([NotNull] CalculatorParser.BreakStmtContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="CalculatorParser.continueStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitContinueStmt([NotNull] CalculatorParser.ContinueStmtContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.incrementExpr"/>.
 	/// </summary>
