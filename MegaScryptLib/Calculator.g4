@@ -7,7 +7,8 @@ grammar Calculator;
 /* Parser Rules */
 program:            (statement | block)*;
 block:				'{' statement* '}' | statement;
-statement:          declaration';' | assignment | ifStmt | incrementExpr';' | decrementExpr';' | invocation';' | retStmt';' | breakStmt';' | continueStmt';' | loopStmt;
+statement:          declaration';' | assignment | ifStmt | incrementExpr';' | decrementExpr';' | invocation';' | retStmt';' | breakStmt';' | continueStmt';' | loopStmt | commentStmt;
+commentStmt:		'//'.*?;
 loopStmt:			forStmt | whileStmt | doWhileStmt';' | foreachStmt;
 declaration:        'var' Id ('=' expression)?;
 funcDeclaration:	'function''('varList?')''{'statement*'}';
