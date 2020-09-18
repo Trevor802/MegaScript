@@ -13,7 +13,7 @@ namespace MegaScrypt {
         }
 
         public Array(IEnumerable<object> enumerable) {
-            m_list = enumerable.ToList();
+            m_list = enumerable is null ? null : enumerable.ToList();
             BindFunctions();
         }
         // TODO: Implement with the inherited interface: Stask.Get/Stack.Set
