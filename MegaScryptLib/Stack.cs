@@ -7,6 +7,10 @@ namespace MegaScrypt
     {
         private Stack parent = null;
         private Dictionary<string, object> m_dict;
+        public Stack Parent {
+            set => parent = value;
+            get => parent;
+        }
 
         public Stack(Stack parent = null)
         {
@@ -64,7 +68,7 @@ namespace MegaScrypt
                     stack = stack.parent;
                 }
                 if (stack is null) {
-                    throw new KeyNotFoundException();
+                    throw new KeyNotFoundException(varName);
                 }
                 return stack.m_dict[varName];
             }
@@ -72,7 +76,7 @@ namespace MegaScrypt
                 obj = m_dict[varName];
             }
             catch {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException(varName);
             }
             return obj;
         }
@@ -93,13 +97,13 @@ namespace MegaScrypt
                     stack = stack.parent;
                 }
                 if (stack is null) {
-                    throw new KeyNotFoundException();
+                    throw new KeyNotFoundException(varName);
                 }
                 stack.m_dict[varName] = value;
                 return;
             }
             if (!m_dict.ContainsKey(varName)) {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException(varName);
             }
             m_dict[varName] = value;
         }

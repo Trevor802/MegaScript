@@ -50,12 +50,6 @@ public interface ICalculatorVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStatement([NotNull] CalculatorParser.StatementContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CalculatorParser.commentStmt"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCommentStmt([NotNull] CalculatorParser.CommentStmtContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="CalculatorParser.loopStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

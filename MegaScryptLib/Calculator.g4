@@ -7,8 +7,7 @@ grammar Calculator;
 /* Parser Rules */
 program:            (statement | block)*;
 block:				'{' statement* '}' | statement;
-statement:          declaration';' | assignment | ifStmt | incrementExpr';' | decrementExpr';' | invocation';' | retStmt';' | breakStmt';' | continueStmt';' | loopStmt | commentStmt;
-commentStmt:		'//'.*?;
+statement:          declaration';' | assignment | ifStmt | incrementExpr';' | decrementExpr';' | invocation';' | retStmt';' | breakStmt';' | continueStmt';' | loopStmt;
 loopStmt:			forStmt | whileStmt | doWhileStmt';' | foreachStmt;
 declaration:        'var' Id ('=' expression)?;
 funcDeclaration:	'function''('varList?')''{'statement*'}';
@@ -88,3 +87,4 @@ DivideAss:			'/=';
 String:				'"'.*?'"';
 Id:                 (Letter|'_')(Letter|'_'|Digit)*;
 WhiteSpaces:        [ \t\r\n]+ -> skip;
+Comment:			(('//'.*?('\r\n'|'\n'|'\r'))|('/*'.*?'*/')) -> skip;

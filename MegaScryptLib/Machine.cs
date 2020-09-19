@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 namespace MegaScrypt
@@ -52,13 +52,23 @@ namespace MegaScrypt
             m_stack.Declare(func.Name, func);
         }
 
-        //public void Declare(NativeFunction.Callback callback, IEnumerable<string> paramNameList = null) {
-        //    NativeFunction func = new NativeFunction(callback, paramNameList);
-        //    Declare(func.Name, func);
-        //}
+        public void Declare(NativeFunction.Callback callback, IEnumerable<string> paramNameList = null) {
+           NativeFunction func = new NativeFunction(callback, paramNameList);
+           Declare(func.Name, func);
+        }
 
         public void Declare(string id, object value) {
             m_stack.Declare(id, value);
+        }
+
+        public object TryInvoke(string id, List<object> parameters = null){
+            try{
+                var func = m_stack.Get(id, out _) as IFunction;
+                return func.Invoke(parameters, m_stack);
+            }
+            catch(Exception e){
+                throw e;
+            }
         }
     }
 }
